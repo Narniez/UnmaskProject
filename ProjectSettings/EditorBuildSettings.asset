@@ -17,6 +17,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/Scenes/Credit Scene.unity
     guid: 9b1edec753a4c044299c83a34a30e020
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Puzzle2.unity
+    guid: c4b5be1fe4d1ff947ac2cf5cc9fc6686
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Puzzle1.unity
+    guid: c50780df3eeb1b24ebce284d3360fadd
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Puzzle3.unity
+    guid: 3528dd33cd5cfe940aac7c4610d788a8
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 35845fe01580c41289b024647b1d1c53, type: 3}
   m_UseUCBPForAssetBundles: 0

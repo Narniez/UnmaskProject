@@ -16,18 +16,17 @@ public class RetartButton : MonoBehaviour
 
     public void Level1()
     {
-        SceneManager.LoadScene("Puzzle 1");
+        SceneManager.LoadScene("Puzzle1");
     }
 
     public void Level2()
     {
-        SceneManager.LoadScene("Puzzle 2");
-        Debug.Log("SERBAN");
+        SceneManager.LoadScene("Puzzle2");
     }
 
     public void Level3()
     {
-        SceneManager.LoadScene("Puzzle 3");
+        SceneManager.LoadScene("Puzzle3");
     }
 
     public void PuzzleFinished()
