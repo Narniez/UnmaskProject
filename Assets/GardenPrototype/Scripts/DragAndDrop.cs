@@ -8,14 +8,18 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private RectTransform rectTransform;
     private Canvas canvas;
     private Vector2 originalPosition;
-    private Image rangeDisplay; // Image named "RangeDisplay"
+    private Image rangeDisplay;
 
-    public bool normal, shade, sun, wet, dry; // Plant environment preferences
-    public bool RatEats, SnailEats; // Determines if pests can eat the plant
-    public bool protectedRat, protectedSnail; // Determines if the plant is protected from pests
-    public bool protectsFromRat, protectsFromSnail; // Determines if it protects others
+    public bool normal, shade, sun, wet, dry;
+    public bool RatEats, SnailEats;
+    public bool protectedRat, protectedSnail;
 
-    public float protectionRadius = 169f; // Range to protect nearby plants
+    public bool protectsFromRat, protectsFromSnail;  // Circular protection
+    public bool protectFromRatAB; // Box protection for Rat only
+
+    [SerializeField] private float protectionRadius = 169f; // Circular protection range
+    [SerializeField] private float protectionWidth = 200f;  // Rectangular protection width
+    [SerializeField] private float protectionHeight = 150f; // Rectangular protection height
 
     private void Awake()
     {
@@ -23,7 +27,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         canvas = GetComponentInParent<Canvas>();
         originalPosition = rectTransform.anchoredPosition;
 
-        // Find the child object specifically named "RangeDisplay"
         Transform childTransform = transform.Find("RangeDisplay");
         if (childTransform != null)
         {
@@ -32,7 +35,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         if (rangeDisplay != null)
         {
-            rangeDisplay.gameObject.SetActive(false); // Hide at the start
+            rangeDisplay.gameObject.SetActive(false);
         }
     }
 
@@ -40,7 +43,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (rangeDisplay != null)
         {
-            rangeDisplay.gameObject.SetActive(true); // Show when dragging starts
+            rangeDisplay.gameObject.SetActive(true);
         }
     }
 
@@ -56,20 +59,50 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (closestSpot != null)
         {
             rectTransform.position = closestSpot.position;
-            ApplyProtection();
+
+            // Apply protection to all plants when a new plant is placed
+            UpdateAllPlantProtections();
 
             if (rangeDisplay != null)
             {
-                rangeDisplay.gameObject.SetActive(true); // Keep image visible when placed
+                rangeDisplay.gameObject.SetActive(true);
             }
         }
         else
         {
+            // Reset protection if returning to the original position
+            ResetProtection();
             rectTransform.anchoredPosition = originalPosition;
 
             if (rangeDisplay != null)
             {
-                rangeDisplay.gameObject.SetActive(false); // Hide image if reset
+                rangeDisplay.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void UpdateAllPlantProtections()
+    {
+        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
+
+        // Reset protection for all plants first
+        foreach (GameObject plant in plants)
+        {
+            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
+            if (plantVars != null)
+            {
+                plantVars.protectedRat = false;
+                plantVars.protectedSnail = false;
+            }
+        }
+
+        // Reapply protection based on the current state of the scene
+        foreach (GameObject plant in plants)
+        {
+            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
+            if (plantVars != null)
+            {
+                plantVars.ApplyProtection();
             }
         }
     }
@@ -80,7 +113,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         foreach (GameObject spot in plantSpots)
         {
             RectTransform spotRect = spot.GetComponent<RectTransform>();
-            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>(); // Get spot properties
+            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
             if (spotData != null && RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
             {
                 if (MatchesPlantSpot(spotData))
@@ -102,18 +135,18 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
         foreach (GameObject plant in plants)
         {
-            if (plant == this.gameObject) continue; // Skip self
+            if (plant == this.gameObject) continue;
 
             RectTransform plantRect = plant.GetComponent<RectTransform>();
             DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
 
-            if (plantVars != null && IsInRange(plantRect))
+            if (plantVars != null && (IsInCircleRange(plantRect) || IsInBoxRange(plantRect)))
             {
-                if (protectsFromRat)
+                if (protectsFromRat || protectFromRatAB)  // Protect from Rat in either range
                 {
                     plantVars.protectedRat = true;
                 }
-                if (protectsFromSnail)
+                if (protectsFromSnail)  // Protect from Snail only in circular range
                 {
                     plantVars.protectedSnail = true;
                 }
@@ -121,25 +154,56 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    private bool IsInRange(RectTransform plantRect)
+    private bool IsInCircleRange(RectTransform plantRect)
     {
         float distance = Vector2.Distance(rectTransform.anchoredPosition, plantRect.anchoredPosition);
-        return distance < protectionRadius;
+        return protectsFromRat || protectsFromSnail ? distance < protectionRadius : false;
+    }
+
+    private bool IsInBoxRange(RectTransform plantRect)
+    {
+        if (!protectFromRatAB) return false;  // Only check if protectFromRatAB is true
+
+        float xDifference = Mathf.Abs(plantRect.anchoredPosition.x - rectTransform.anchoredPosition.x);
+        float yDifference = Mathf.Abs(plantRect.anchoredPosition.y - rectTransform.anchoredPosition.y);
+
+        return xDifference < (protectionWidth / 2) && yDifference < (protectionHeight / 2);
+    }
+
+    private void ResetProtection()
+    {
+        // **Reset protection states**
+        protectedRat = false;
+        protectedSnail = false;
     }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (!protectsFromRat && !protectsFromSnail) return; // Only draw if it protects from pests
+        if (!protectsFromRat && !protectsFromSnail && !protectFromRatAB) return;
 
         if (rectTransform == null)
         {
             rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null) return; // Exit if still null
+            if (rectTransform == null) return;
         }
 
-        UnityEditor.Handles.color = Color.green;
-        UnityEditor.Handles.DrawWireDisc(rectTransform.position, Vector3.forward, protectionRadius);
+        Vector3 position = rectTransform.position;
+
+        // Draw circular protection if enabled
+        if (protectsFromRat || protectsFromSnail)
+        {
+            UnityEditor.Handles.color = Color.green;
+            UnityEditor.Handles.DrawWireDisc(position, Vector3.forward, protectionRadius);
+        }
+
+        // Draw box protection if enabled
+        if (protectFromRatAB)
+        {
+            UnityEditor.Handles.color = Color.green;
+            Vector3 size = new Vector3(protectionWidth, protectionHeight, 1);
+            UnityEditor.Handles.DrawWireCube(position, size);
+        }
     }
 #endif
 }

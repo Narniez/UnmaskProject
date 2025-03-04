@@ -4,14 +4,30 @@ using UnityEngine.SceneManagement;
 public class RetartButton : MonoBehaviour
 {
     [SerializeField] GameObject CheckButton;
-    public void RestartScene()
+    private void RestartScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reloads the current scene
     }
 
-    public void MakeButtonInactive()
+    private void MakeButtonInactive()
     {
         CheckButton.SetActive(false);
+    }
+
+    public void Level1()
+    {
+        SceneManager.LoadScene("Puzzle 1");
+    }
+
+    public void Level2()
+    {
+        SceneManager.LoadScene("Puzzle 2");
+        Debug.Log("SERBAN");
+    }
+
+    public void Level3()
+    {
+        SceneManager.LoadScene("Puzzle 3");
     }
 
     public void PuzzleFinished()
