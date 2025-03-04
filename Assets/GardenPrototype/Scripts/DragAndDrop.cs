@@ -60,6 +60,13 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             rectTransform.position = closestSpot.position;
 
+            // Mark the spot as occupied
+            PlantSpotVar spotData = closestSpot.GetComponent<PlantSpotVar>();
+            if (spotData != null)
+            {
+                spotData.isOccupied = true;
+            }
+
             // Apply protection to all plants when a new plant is placed
             UpdateAllPlantProtections();
 
@@ -114,7 +121,9 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             RectTransform spotRect = spot.GetComponent<RectTransform>();
             PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
-            if (spotData != null && RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
+
+            // Check if spot is valid and not occupied
+            if (spotData != null && !spotData.isOccupied && RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
             {
                 if (MatchesPlantSpot(spotData))
                 {
@@ -172,9 +181,22 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void ResetProtection()
     {
-        // **Reset protection states**
         protectedRat = false;
         protectedSnail = false;
+
+        // Free up the spot when plant is removed
+        GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
+        foreach (GameObject spot in plantSpots)
+        {
+            if (Vector2.Distance(spot.transform.position, rectTransform.position) < 10f)
+            {
+                PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
+                if (spotData != null)
+                {
+                    spotData.isOccupied = false;
+                }
+            }
+        }
     }
 
 #if UNITY_EDITOR

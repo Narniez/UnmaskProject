@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlantSpotVar : MonoBehaviour
 {
     public bool normal, shade, sun, wet, dry, barrier; // Plot environment properties
+    public bool isOccupied = false;
     [SerializeField] private GameObject shadeImage, sunImage, wetImage, dryImage, stoneImage; // Serialized for inspector assignment
 
     private void Start()

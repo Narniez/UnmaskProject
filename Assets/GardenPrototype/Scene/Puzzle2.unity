@@ -3974,7 +3974,7 @@ RectTransform:
   m_GameObject: {fileID: 1064667673}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 4.2423453, y: 4.2423453, z: 4.2423453}
+  m_LocalScale: {x: 4.4222207, y: 4.4222207, z: 4.4222207}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1391487778}
@@ -5546,7 +5546,7 @@ MonoBehaviour:
   protectsFromRat: 0
   protectsFromSnail: 1
   protectFromRatAB: 0
-  protectionRadius: 169
+  protectionRadius: 175
   protectionWidth: 200
   protectionHeight: 150
 --- !u!114 &1391487781
