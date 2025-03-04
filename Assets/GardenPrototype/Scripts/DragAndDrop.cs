@@ -130,7 +130,13 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (rectTransform == null) return;
+        if (!protectsFromRat && !protectsFromSnail) return; // Only draw if it protects from pests
+
+        if (rectTransform == null)
+        {
+            rectTransform = GetComponent<RectTransform>();
+            if (rectTransform == null) return; // Exit if still null
+        }
 
         UnityEditor.Handles.color = Color.green;
         UnityEditor.Handles.DrawWireDisc(rectTransform.position, Vector3.forward, protectionRadius);

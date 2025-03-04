@@ -3,32 +3,49 @@ using System.Collections.Generic;
 
 public class Pests : MonoBehaviour
 {
-    public bool isRat, isSnail; // Define pest type
-    public float moveSpeed = 200f; // Adjust this value for UI movement
+    public bool isRat, isSnail;
+    public float moveSpeed = 200f;
     private Transform targetPlant;
     private bool isMoving = false;
-    public static bool PuzzleFinished = false; // Determines when pests should move
-    public float detectionRadius = 200f; // Adjust based on UI scale
+    public static bool PuzzleCheck = false;
+    public static bool PuzzleCompleated = false;
+    public float detectionRadius = 200f;
 
-    private RectTransform rectTransform; // Pest's UI position reference
-    private List<Transform> initialTargets = new List<Transform>(); // Stores plants in range when puzzle starts
-    private bool hasLockedTargets = false; // Prevents finding new targets after moving starts
-    private Vector2 startPosition; // Stores initial position
+    private RectTransform rectTransform;
+    private List<Transform> initialTargets = new List<Transform>();
+    private bool hasLockedTargets = false;
+    private Vector2 startPosition;
+    private bool returningToStart = false;
 
-    private bool returningToStart = false; // Flag to track return movement
+    private static int activePests = 0;
+
+    private void Awake()
+    {
+        PuzzleCheck = false;
+        PuzzleCompleated = false;
+    }
 
     private void Start()
     {
-        rectTransform = GetComponent<RectTransform>(); // Get RectTransform for UI positioning
-        startPosition = rectTransform.anchoredPosition; // Store the starting position
+        rectTransform = GetComponent<RectTransform>();
+        startPosition = rectTransform.anchoredPosition;
     }
 
     private void Update()
     {
-        if (PuzzleFinished && !hasLockedTargets) // Only detect plants ONCE when the puzzle starts
+        if (PuzzleCheck && !hasLockedTargets)
         {
             FindInitialTargetPlants();
-            hasLockedTargets = true; // Lock in targets, prevent further checks
+            hasLockedTargets = true;
+
+            if (initialTargets.Count == 0)
+            {
+                CheckAllPestsCompleted();
+            }
+            else
+            {
+                activePests++;
+            }
         }
 
         if (isMoving && targetPlant != null)
@@ -58,15 +75,20 @@ public class Pests : MonoBehaviour
 
         if (initialTargets.Count > 0)
         {
-            targetPlant = initialTargets[0]; // Set first target
+            targetPlant = initialTargets[0];
             isMoving = true;
+            activePests++; // Increase active pests count
+        }
+        else
+        {
+            CheckAllPestsCompleted(); // No valid targets, check if all pests are done
         }
     }
 
     private bool IsInRange(RectTransform plantRect)
     {
         float distance = Vector2.Distance(rectTransform.anchoredPosition, plantRect.anchoredPosition);
-        return distance < detectionRadius; // Adjust based on UI scale
+        return distance < detectionRadius;
     }
 
     private void MoveTowardsPlant()
@@ -103,13 +125,13 @@ public class Pests : MonoBehaviour
 
         if (initialTargets.Count > 0)
         {
-            targetPlant = initialTargets[0]; // Move to next plant from the original list
+            targetPlant = initialTargets[0];
         }
         else
         {
             targetPlant = null;
-            isMoving = false; // Stop moving when all original targets are eaten
-            returningToStart = true; // Start moving back to start
+            isMoving = false;
+            returningToStart = true;
         }
     }
 
@@ -123,12 +145,37 @@ public class Pests : MonoBehaviour
 
         if (Vector2.Distance(rectTransform.anchoredPosition, startPosition) < 5f)
         {
-            returningToStart = false; // Stop movement once back
+            returningToStart = false;
+            activePests--;
+
+            CheckAllPestsCompleted();
         }
     }
 
-    public void PuzzleDone()
+    public void PuzzleChecking()
     {
-        PuzzleFinished = true;
+        PuzzleCheck = true;
     }
+
+    private void CheckAllPestsCompleted()
+    {
+        if (activePests <= 0)
+        {
+            PuzzleCompleated = true;
+        }
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmos()
+    {
+        if (rectTransform == null)
+        {
+            rectTransform = GetComponent<RectTransform>();
+            if (rectTransform == null) return; // Prevent further execution if still null
+        }
+
+        UnityEditor.Handles.color = Color.red;
+        UnityEditor.Handles.DrawWireDisc(rectTransform.position, Vector3.forward, detectionRadius);
+    }
+#endif
 }
