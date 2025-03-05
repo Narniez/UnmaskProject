@@ -19,6 +19,11 @@ public class Pests : MonoBehaviour
 
     private static int activePests = 0;
 
+    // Reference to the AudioSource component
+    private AudioSource audioSource;
+    // The sound clip for eating a plant
+    [SerializeField] private AudioClip eatSound;
+
     private void Awake()
     {
         PuzzleCheck = false;
@@ -29,6 +34,9 @@ public class Pests : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         startPosition = rectTransform.anchoredPosition;
+
+        // Get the AudioSource attached to the same GameObject
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -77,7 +85,7 @@ public class Pests : MonoBehaviour
         {
             targetPlant = initialTargets[0];
             isMoving = true;
-            activePests++; 
+            activePests++;
         }
         else
         {
@@ -121,6 +129,12 @@ public class Pests : MonoBehaviour
         {
             targetPlant.gameObject.SetActive(false);
             initialTargets.Remove(targetPlant);
+
+            // Play the eat sound
+            if (audioSource != null && eatSound != null)
+            {
+                audioSource.PlayOneShot(eatSound); // Play the sound when plant is eaten
+            }
         }
 
         if (initialTargets.Count > 0)

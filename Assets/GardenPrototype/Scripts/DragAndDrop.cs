@@ -21,11 +21,18 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private float protectionWidth = 200f;  // rectangular protection width
     [SerializeField] private float protectionHeight = 150f; // rectangular protection height
 
+
+    private AudioSource soundManagerAudioSource;
+    [SerializeField] private AudioClip plantPlacedSound;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
         originalPosition = rectTransform.anchoredPosition;
+
+        
+        soundManagerAudioSource = GameObject.Find("SoundManager").GetComponent<AudioSource>();
 
         Transform childTransform = transform.Find("RangeDisplay");
         if (childTransform != null)
@@ -69,6 +76,12 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
             // Apply protection to all plants when a new plant is placed
             UpdateAllPlantProtections();
+
+            // Play the sound effect when the plant is placed
+            if (soundManagerAudioSource != null && plantPlacedSound != null)
+            {
+                soundManagerAudioSource.PlayOneShot(plantPlacedSound);  // Play the planting sound
+            }
 
             if (rangeDisplay != null)
             {
