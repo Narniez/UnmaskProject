@@ -18,6 +18,18 @@ EditorBuildSettings:
     path: Assets/Level/Scenes/Credit Scene.unity
     guid: 9b1edec753a4c044299c83a34a30e020
   - enabled: 1
+    path: Assets/GardenPrototype/Scene/Tutorial1.unity
+    guid: aa9364e2806d7554cb20b28574fc0a08
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Tutorial2.unity
+    guid: b60a05a363874a84d9326abb9949c86d
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Tutorial3.unity
+    guid: 1b0e965844438eb4fae1c05629224769
+  - enabled: 1
+    path: Assets/GardenPrototype/Scene/Tutorial4.unity
+    guid: afaebec3992de3c42b488e6599dd015a
+  - enabled: 1
     path: Assets/GardenPrototype/Scene/Puzzle1.unity
     guid: c50780df3eeb1b24ebce284d3360fadd
   - enabled: 1
