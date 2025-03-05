@@ -77,7 +77,7 @@ public class Pests : MonoBehaviour
         {
             targetPlant = initialTargets[0];
             isMoving = true;
-            activePests++; // Increase active pests count
+            activePests++; 
         }
         else
         {
@@ -171,7 +171,7 @@ public class Pests : MonoBehaviour
         if (rectTransform == null)
         {
             rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null) return; // Prevent further execution if still null
+            if (rectTransform == null) return;
         }
 
         UnityEditor.Handles.color = Color.red;

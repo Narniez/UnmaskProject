@@ -6,7 +6,7 @@ public class RetartButton : MonoBehaviour
     [SerializeField] GameObject CheckButton;
     private void RestartScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reloads the current scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // reloads the current scene
     }
 
     private void MakeButtonInactive()

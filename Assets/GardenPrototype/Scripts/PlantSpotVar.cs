@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class PlantSpotVar : MonoBehaviour
 {
-    public bool normal, shade, sun, wet, dry, barrier; // Plot environment properties
+    public bool normal, shade, sun, wet, dry, barrier; // plot environment properties
     public bool isOccupied = false;
-    [SerializeField] private GameObject shadeImage, sunImage, wetImage, dryImage, stoneImage; // Serialized for inspector assignment
+    [SerializeField] private GameObject shadeImage, sunImage, wetImage, dryImage, stoneImage;
 
     private void Start()
     {
@@ -13,14 +13,14 @@ public class PlantSpotVar : MonoBehaviour
 
     private void UpdateVisual()
     {
-        // Deactivate all images
+        // deactivate all images
         shadeImage?.SetActive(false);
         sunImage?.SetActive(false);
         wetImage?.SetActive(false);
         dryImage?.SetActive(false);
         stoneImage?.SetActive(false);
 
-        // Activate the correct image based on the assigned environment
+        // activate the correct image based on the assigned environment
         if (shade && shadeImage) shadeImage.SetActive(true);
         else if (sun && sunImage) sunImage.SetActive(true);
         else if (wet && wetImage) wetImage.SetActive(true);

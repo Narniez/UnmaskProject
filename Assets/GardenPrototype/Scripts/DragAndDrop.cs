@@ -14,12 +14,12 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public bool RatEats, SnailEats;
     public bool protectedRat, protectedSnail;
 
-    public bool protectsFromRat, protectsFromSnail;  // Circular protection
-    public bool protectFromRatAB; // Box protection for Rat only
+    public bool protectsFromRat, protectsFromSnail;  // circular protection
+    public bool protectFromRatAB; //above-below protection
 
-    [SerializeField] private float protectionRadius = 169f; // Circular protection range
-    [SerializeField] private float protectionWidth = 200f;  // Rectangular protection width
-    [SerializeField] private float protectionHeight = 150f; // Rectangular protection height
+    [SerializeField] private float protectionRadius = 169f; // circular protection range
+    [SerializeField] private float protectionWidth = 200f;  // rectangular protection width
+    [SerializeField] private float protectionHeight = 150f; // rectangular protection height
 
     private void Awake()
     {
