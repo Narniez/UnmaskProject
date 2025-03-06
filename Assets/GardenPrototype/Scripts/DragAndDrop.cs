@@ -12,14 +12,14 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public bool normal, shade, sun, wet, dry;
     public bool RatEats, SnailEats;
-    public bool protectedRat, protectedSnail;
+    public bool protectedRat, protectedSnail; // <-- Protection is restored
 
-    public bool protectsFromRat, protectsFromSnail;  // circular protection
-    public bool protectFromRatAB; // above-below protection
+    public bool protectsFromRat, protectsFromSnail;  // Circular protection
+    public bool protectFromRatAB; // Above-below protection
 
-    [SerializeField] private float protectionRadius = 169f; // circular protection range
-    [SerializeField] private float protectionWidth = 200f;  // rectangular protection width
-    [SerializeField] private float protectionHeight = 150f; // rectangular protection height
+    [SerializeField] private float protectionRadius = 169f; // Circular protection range
+    [SerializeField] private float protectionWidth = 200f;  // Rectangular protection width
+    [SerializeField] private float protectionHeight = 150f; // Rectangular protection height
 
     private AudioSource soundManagerAudioSource;
     [SerializeField] private AudioClip plantPlacedSound;
@@ -64,23 +64,18 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         if (closestSpot != null)
         {
-            // Free up the previous spot before moving
             FreePreviousSpot();
 
-            // Move the plant to the new valid spot
             rectTransform.position = closestSpot.position;
 
-            // Mark the new spot as occupied
             PlantSpotVar spotData = closestSpot.GetComponent<PlantSpotVar>();
             if (spotData != null)
             {
                 spotData.isOccupied = true;
             }
 
-            // Apply protection to all plants when a new plant is placed
-            UpdateAllPlantProtections();
+            UpdateAllPlantProtections(); // <-- Protection is now updated again
 
-            // Play the sound effect when the plant is placed
             if (soundManagerAudioSource != null && plantPlacedSound != null)
             {
                 soundManagerAudioSource.PlayOneShot(plantPlacedSound);
@@ -93,7 +88,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         else
         {
-            // Reset protection if returning to the original position
             FreePreviousSpot();
             rectTransform.anchoredPosition = originalPosition;
 
@@ -121,7 +115,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 if (MatchesPlantSpot(spotData))
                 {
                     float distance = Vector2.Distance(spot.transform.position, rectTransform.position);
-                    if (distance < closestDistance) // Pick the closest valid spot
+                    if (distance < closestDistance)
                     {
                         closestDistance = distance;
                         bestSpot = spot.transform;
@@ -142,7 +136,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (spotData != null && spotData.isOccupied)
             {
                 float distance = Vector2.Distance(spot.transform.position, rectTransform.position);
-                if (distance < 10f)  // Adjust threshold if needed
+                if (distance < 10f)
                 {
                     spotData.isOccupied = false;
                 }
@@ -158,35 +152,65 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void UpdateAllPlantProtections()
     {
         GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-        GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
 
-        // Reset all plant spots before checking
-        foreach (GameObject spot in plantSpots)
-        {
-            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
-            if (spotData != null)
-            {
-                spotData.isOccupied = false;  // Reset occupancy
-            }
-        }
-
-        // Reapply protection and update occupied spots
         foreach (GameObject plant in plants)
         {
             DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
             if (plantVars != null)
             {
-                Transform matchingSpot = plantVars.FindMatchingPlantSpot();
-                if (matchingSpot != null)
+                plantVars.protectedRat = false;
+                plantVars.protectedSnail = false;
+            }
+        }
+
+        foreach (GameObject plant in plants)
+        {
+            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
+            if (plantVars != null)
+            {
+                plantVars.ApplyProtection();
+            }
+        }
+    }
+
+    private void ApplyProtection()
+    {
+        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
+        foreach (GameObject plant in plants)
+        {
+            if (plant == this.gameObject) continue;
+
+            RectTransform plantRect = plant.GetComponent<RectTransform>();
+            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
+
+            if (plantVars != null && (IsInCircleRange(plantRect) || IsInBoxRange(plantRect)))
+            {
+                if (protectsFromRat || protectFromRatAB)
                 {
-                    PlantSpotVar spotData = matchingSpot.GetComponent<PlantSpotVar>();
-                    if (spotData != null)
-                    {
-                        spotData.isOccupied = true;  // Mark this spot as occupied
-                    }
+                    plantVars.protectedRat = true;
+                }
+                if (protectsFromSnail)
+                {
+                    plantVars.protectedSnail = true;
                 }
             }
         }
+    }
+
+    private bool IsInCircleRange(RectTransform plantRect)
+    {
+        float distance = Vector2.Distance(rectTransform.anchoredPosition, plantRect.anchoredPosition);
+        return (protectsFromRat || protectsFromSnail) && distance < protectionRadius;
+    }
+
+    private bool IsInBoxRange(RectTransform plantRect)
+    {
+        if (!protectFromRatAB) return false;
+
+        float xDifference = Mathf.Abs(plantRect.anchoredPosition.x - rectTransform.anchoredPosition.x);
+        float yDifference = Mathf.Abs(plantRect.anchoredPosition.y - rectTransform.anchoredPosition.y);
+
+        return xDifference < (protectionWidth / 2) && yDifference < (protectionHeight / 2);
     }
 
 #if UNITY_EDITOR
@@ -202,14 +226,12 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         Vector3 position = rectTransform.position;
 
-        // Draw circular protection if enabled
         if (protectsFromRat || protectsFromSnail)
         {
             UnityEditor.Handles.color = Color.green;
             UnityEditor.Handles.DrawWireDisc(position, Vector3.forward, protectionRadius);
         }
 
-        // Draw box protection if enabled
         if (protectFromRatAB)
         {
             UnityEditor.Handles.color = Color.green;
