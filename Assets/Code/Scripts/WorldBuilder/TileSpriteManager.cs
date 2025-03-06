@@ -5,42 +5,56 @@ using UnityEngine;
 public class TileSpriteManager : ScriptableObject
 {
     [System.Serializable]
-    public class TileSprites
+    public class BiomeSprites
     {
-        public TileType tileType;
+        public BiomeType biomeType; // Biome type (e.g., Cave, Oasis)
         public Sprite strongConnectionSprite;
         public Sprite weakConnectionSprite;
         public Sprite badConnectionSprite;
         public Sprite defaultSprite;
     }
 
+    [System.Serializable]
+    public class TileSprites
+    {
+        public TileType tileType; // Tile type (e.g., Desert, Mountain)
+        public List<BiomeSprites> biomeSprites; // List of biome-specific sprites
+    }
+
     public List<TileSprites> tileSprites = new List<TileSprites>();
 
-    private Dictionary<TileType, TileSprites> spriteDictionary;
+    private Dictionary<TileType, Dictionary<BiomeType, BiomeSprites>> spriteDictionary;
 
     private void OnEnable()
     {
-        // Convert list to dictionary for quick lookup
-        spriteDictionary = new Dictionary<TileType, TileSprites>();
+        // Convert list to nested dictionary for quick lookup
+        spriteDictionary = new Dictionary<TileType, Dictionary<BiomeType, BiomeSprites>>();
         foreach (var tile in tileSprites)
         {
-            spriteDictionary[tile.tileType] = tile;
+            var biomeDict = new Dictionary<BiomeType, BiomeSprites>();
+            foreach (var biome in tile.biomeSprites)
+            {
+                biomeDict[biome.biomeType] = biome;
+            }
+            spriteDictionary[tile.tileType] = biomeDict;
         }
     }
 
-    public Sprite GetSprite(TileType type, ConnectionStrength strength)
+    public Sprite GetSprite(TileType tileType, BiomeType biomeType, ConnectionStrength strength)
     {
-
-        if (spriteDictionary.TryGetValue(type, out TileSprites sprites))
+        if (spriteDictionary.TryGetValue(tileType, out var biomeDict))
         {
-            return strength switch
+            if (biomeDict.TryGetValue(biomeType, out var biomeSprites))
             {
-                ConnectionStrength.Strong => sprites.strongConnectionSprite,
-                ConnectionStrength.Weak => sprites.weakConnectionSprite,
-                ConnectionStrength.Bad => sprites.badConnectionSprite,
-                ConnectionStrength.Default => sprites.defaultSprite,
-                _ => null
-            };
+                return strength switch
+                {
+                    ConnectionStrength.Strong => biomeSprites.strongConnectionSprite,
+                    ConnectionStrength.Weak => biomeSprites.weakConnectionSprite,
+                    ConnectionStrength.Bad => biomeSprites.badConnectionSprite,
+                    ConnectionStrength.Default => biomeSprites.defaultSprite,
+                    _ => null
+                };
+            }
         }
         return null;
     }
