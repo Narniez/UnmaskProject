@@ -15,12 +15,11 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public bool protectedRat, protectedSnail;
 
     public bool protectsFromRat, protectsFromSnail;  // circular protection
-    public bool protectFromRatAB; //above-below protection
+    public bool protectFromRatAB; // above-below protection
 
     [SerializeField] private float protectionRadius = 169f; // circular protection range
     [SerializeField] private float protectionWidth = 200f;  // rectangular protection width
     [SerializeField] private float protectionHeight = 150f; // rectangular protection height
-
 
     private AudioSource soundManagerAudioSource;
     [SerializeField] private AudioClip plantPlacedSound;
@@ -31,7 +30,6 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         canvas = GetComponentInParent<Canvas>();
         originalPosition = rectTransform.anchoredPosition;
 
-        
         soundManagerAudioSource = GameObject.Find("SoundManager").GetComponent<AudioSource>();
 
         Transform childTransform = transform.Find("RangeDisplay");
@@ -63,11 +61,16 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void OnPointerUp(PointerEventData eventData)
     {
         Transform closestSpot = FindMatchingPlantSpot();
+
         if (closestSpot != null)
         {
+            // Free up the previous spot before moving
+            FreePreviousSpot();
+
+            // Move the plant to the new valid spot
             rectTransform.position = closestSpot.position;
 
-            // Mark the spot as occupied
+            // Mark the new spot as occupied
             PlantSpotVar spotData = closestSpot.GetComponent<PlantSpotVar>();
             if (spotData != null)
             {
@@ -80,7 +83,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             // Play the sound effect when the plant is placed
             if (soundManagerAudioSource != null && plantPlacedSound != null)
             {
-                soundManagerAudioSource.PlayOneShot(plantPlacedSound);  // Play the planting sound
+                soundManagerAudioSource.PlayOneShot(plantPlacedSound);
             }
 
             if (rangeDisplay != null)
@@ -91,7 +94,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         else
         {
             // Reset protection if returning to the original position
-            ResetProtection();
+            FreePreviousSpot();
             rectTransform.anchoredPosition = originalPosition;
 
             if (rangeDisplay != null)
@@ -101,50 +104,50 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    private void UpdateAllPlantProtections()
-    {
-        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-
-        // Reset protection for all plants first
-        foreach (GameObject plant in plants)
-        {
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-            if (plantVars != null)
-            {
-                plantVars.protectedRat = false;
-                plantVars.protectedSnail = false;
-            }
-        }
-
-        // Reapply protection based on the current state of the scene
-        foreach (GameObject plant in plants)
-        {
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-            if (plantVars != null)
-            {
-                plantVars.ApplyProtection();
-            }
-        }
-    }
-
     private Transform FindMatchingPlantSpot()
     {
         GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
+        Transform bestSpot = null;
+        float closestDistance = float.MaxValue;
+
         foreach (GameObject spot in plantSpots)
         {
             RectTransform spotRect = spot.GetComponent<RectTransform>();
             PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
 
-            // Check if spot is valid and not occupied
-            if (spotData != null && !spotData.isOccupied && RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
+            if (spotData != null && !spotData.isOccupied &&
+                RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
             {
                 if (MatchesPlantSpot(spotData))
                 {
-                    return spot.transform;
+                    float distance = Vector2.Distance(spot.transform.position, rectTransform.position);
+                    if (distance < closestDistance) // Pick the closest valid spot
+                    {
+                        closestDistance = distance;
+                        bestSpot = spot.transform;
+                    }
                 }
             }
         }
-        return null;
+        return bestSpot;
+    }
+
+    private void FreePreviousSpot()
+    {
+        GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
+
+        foreach (GameObject spot in plantSpots)
+        {
+            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
+            if (spotData != null && spotData.isOccupied)
+            {
+                float distance = Vector2.Distance(spot.transform.position, rectTransform.position);
+                if (distance < 10f)  // Adjust threshold if needed
+                {
+                    spotData.isOccupied = false;
+                }
+            }
+        }
     }
 
     private bool MatchesPlantSpot(PlantSpotVar spot)
@@ -152,61 +155,35 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         return (normal && spot.normal) || (shade && spot.shade) || (sun && spot.sun) || (wet && spot.wet) || (dry && spot.dry);
     }
 
-    private void ApplyProtection()
+    private void UpdateAllPlantProtections()
     {
         GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-        foreach (GameObject plant in plants)
-        {
-            if (plant == this.gameObject) continue;
-
-            RectTransform plantRect = plant.GetComponent<RectTransform>();
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-
-            if (plantVars != null && (IsInCircleRange(plantRect) || IsInBoxRange(plantRect)))
-            {
-                if (protectsFromRat || protectFromRatAB)  // Protect from Rat in either range
-                {
-                    plantVars.protectedRat = true;
-                }
-                if (protectsFromSnail)  // Protect from Snail only in circular range
-                {
-                    plantVars.protectedSnail = true;
-                }
-            }
-        }
-    }
-
-    private bool IsInCircleRange(RectTransform plantRect)
-    {
-        float distance = Vector2.Distance(rectTransform.anchoredPosition, plantRect.anchoredPosition);
-        return protectsFromRat || protectsFromSnail ? distance < protectionRadius : false;
-    }
-
-    private bool IsInBoxRange(RectTransform plantRect)
-    {
-        if (!protectFromRatAB) return false;  // Only check if protectFromRatAB is true
-
-        float xDifference = Mathf.Abs(plantRect.anchoredPosition.x - rectTransform.anchoredPosition.x);
-        float yDifference = Mathf.Abs(plantRect.anchoredPosition.y - rectTransform.anchoredPosition.y);
-
-        return xDifference < (protectionWidth / 2) && yDifference < (protectionHeight / 2);
-    }
-
-    private void ResetProtection()
-    {
-        protectedRat = false;
-        protectedSnail = false;
-
-        // Free up the spot when plant is removed
         GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
+
+        // Reset all plant spots before checking
         foreach (GameObject spot in plantSpots)
         {
-            if (Vector2.Distance(spot.transform.position, rectTransform.position) < 10f)
+            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
+            if (spotData != null)
             {
-                PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
-                if (spotData != null)
+                spotData.isOccupied = false;  // Reset occupancy
+            }
+        }
+
+        // Reapply protection and update occupied spots
+        foreach (GameObject plant in plants)
+        {
+            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
+            if (plantVars != null)
+            {
+                Transform matchingSpot = plantVars.FindMatchingPlantSpot();
+                if (matchingSpot != null)
                 {
-                    spotData.isOccupied = false;
+                    PlantSpotVar spotData = matchingSpot.GetComponent<PlantSpotVar>();
+                    if (spotData != null)
+                    {
+                        spotData.isOccupied = true;  // Mark this spot as occupied
+                    }
                 }
             }
         }
