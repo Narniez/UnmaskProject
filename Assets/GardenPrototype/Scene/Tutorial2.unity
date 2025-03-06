@@ -7705,7 +7705,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Rats have appeared, and they\u2019re hungry! Be careful they can eat some
-    of your plants! Protect your garden by planting specific plants that keep the
+    of your plants! Protect your garden by planting specific plants that KEEP the
     pests away."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
