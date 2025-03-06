@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,9 +17,16 @@ public class HexaTileManager : MonoBehaviour
     private Button oasisButton;
     private Button defaultButton;
 
+    HexTilePathfinder pathfinder;
+
+
+    public GameObject puzzleCorrectPannel;
+    public GameObject puzzleWrongPannel;
+
     private void Start()
     {
         InitializeBiomeMenu();
+        pathfinder = GetComponent<HexTilePathfinder>();
     }
     void Update()
     {
@@ -139,6 +147,27 @@ public class HexaTileManager : MonoBehaviour
         clickedTile = tile;
         UpdateMenuButtons(tile.GetTileType());
         biomeMenu.SetActive(true);
+    }
+
+    public void CheckPuzzle()
+    {
+        if (pathfinder.IsPathConnected())
+        {
+            StartCoroutine(ShowPannel(5f, puzzleCorrectPannel));
+        }
+        else
+        {
+            StartCoroutine(ShowPannel(2f, puzzleWrongPannel));
+        }
+    }
+
+    private IEnumerator ShowPannel(float waitTime, GameObject pannel)
+    {
+        pannel.SetActive(true);
+
+        yield return new WaitForSeconds(waitTime);
+
+        pannel.SetActive(false);
     }
 
 }

@@ -14,22 +14,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSprites:
   - tileType: 1
-    strongConnectionSprite: {fileID: 21300000, guid: 7ca325eb0cc5f654e9f38f9288e0fb7d, type: 3}
-    weakConnectionSprite: {fileID: 21300000, guid: 87d4a59b14a4042498d49e745c6a92cf, type: 3}
-    badConnectionSprite: {fileID: 21300000, guid: e59abf09f4fa03445807195cd344af16, type: 3}
-    defaultSprite: {fileID: 21300000, guid: 33de91be10979d44e8cf8e5e16998e55, type: 3}
+    biomeSprites:
+    - biomeType: 3
+      strongConnectionSprite: {fileID: 21300000, guid: 7ca325eb0cc5f654e9f38f9288e0fb7d, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: 87d4a59b14a4042498d49e745c6a92cf, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: e59abf09f4fa03445807195cd344af16, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    - biomeType: 0
+      strongConnectionSprite: {fileID: 21300000, guid: 33de91be10979d44e8cf8e5e16998e55, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: 33de91be10979d44e8cf8e5e16998e55, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 33de91be10979d44e8cf8e5e16998e55, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   - tileType: 0
-    strongConnectionSprite: {fileID: 21300000, guid: c282a5ddd7790c0438d9edb3b9988028, type: 3}
-    weakConnectionSprite: {fileID: 21300000, guid: a176ea1c7d626dd4fb1c38adbc7565ee, type: 3}
-    badConnectionSprite: {fileID: 21300000, guid: 3be4b9906dce8ae4392d3bbe31541aa7, type: 3}
-    defaultSprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+    biomeSprites:
+    - biomeType: 4
+      strongConnectionSprite: {fileID: 21300000, guid: 9e5c40a5b7bb2ea4fa940a2719e9f33f, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: e253ad0ae8ecb024189f41040f513b79, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 7c3b0da7eb699294ea764297a4eebbe8, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    - biomeType: 2
+      strongConnectionSprite: {fileID: 21300000, guid: 2f695f1a59c60e7488e0cd29ec7745f8, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: e12d547c07f66cd4ca5cd810cb75b86f, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 6e9adec4573d9e342a7c6c2dc2ebf027, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    - biomeType: 0
+      strongConnectionSprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   - tileType: 3
-    strongConnectionSprite: {fileID: 21300000, guid: 2f695f1a59c60e7488e0cd29ec7745f8, type: 3}
-    weakConnectionSprite: {fileID: 21300000, guid: e12d547c07f66cd4ca5cd810cb75b86f, type: 3}
-    badConnectionSprite: {fileID: 21300000, guid: 6e9adec4573d9e342a7c6c2dc2ebf027, type: 3}
-    defaultSprite: {fileID: 21300000, guid: c0e8e4d909cab554d86313a0524d70b1, type: 3}
+    biomeSprites:
+    - biomeType: 2
+      strongConnectionSprite: {fileID: 21300000, guid: 2f695f1a59c60e7488e0cd29ec7745f8, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: e12d547c07f66cd4ca5cd810cb75b86f, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 6e9adec4573d9e342a7c6c2dc2ebf027, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    - biomeType: 0
+      strongConnectionSprite: {fileID: 21300000, guid: c0e8e4d909cab554d86313a0524d70b1, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: c0e8e4d909cab554d86313a0524d70b1, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: c0e8e4d909cab554d86313a0524d70b1, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   - tileType: 4
-    strongConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
-    weakConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
-    badConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
-    defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    biomeSprites:
+    - biomeType: 1
+      strongConnectionSprite: {fileID: 21300000, guid: c282a5ddd7790c0438d9edb3b9988028, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: a176ea1c7d626dd4fb1c38adbc7565ee, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 3be4b9906dce8ae4392d3bbe31541aa7, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+    - biomeType: 0
+      strongConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+      defaultSprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
+  - tileType: 2
+    biomeSprites:
+    - biomeType: 0
+      strongConnectionSprite: {fileID: 21300000, guid: 49fc0c74cf27fd44eb2162a78005e60c, type: 3}
+      weakConnectionSprite: {fileID: 21300000, guid: 49fc0c74cf27fd44eb2162a78005e60c, type: 3}
+      badConnectionSprite: {fileID: 21300000, guid: 49fc0c74cf27fd44eb2162a78005e60c, type: 3}
+      defaultSprite: {fileID: 21300000, guid: 49fc0c74cf27fd44eb2162a78005e60c, type: 3}

@@ -60,14 +60,15 @@ public class HexGrid : MonoBehaviour
 
     public void ClearGrid()
     {
-        // Destroy all existing tiles before regenerating the grid
-        foreach (var tile in hexTiles.Values)
+        for (int i = 0; i < transform.childCount; i++)
         {
-            if (tile != null)
-                DestroyImmediate(tile.gameObject);
-        }
-        hexTiles.Clear();
+            if (transform.GetChild(i).GetComponent<HexTile>())
+            {
+                transform.GetChild(i).GetComponent<HexTile>().tileType = TileType.Default;
+                transform.GetChild(i).GetComponent<HexTile>().UpdateVisual();
 
+            }
+        }
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
         UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(gameObject.scene);
@@ -77,11 +78,12 @@ public class HexGrid : MonoBehaviour
 
     public void UpdateGridVisuals()
     {
-        foreach (var tile in hexTiles.Values)
+
+        for(int i = 0; i< transform.childCount; i++)
         {
-            if (tile != null)
+            if (transform.GetChild(i).GetComponent<HexTile>())
             {
-                tile.UpdateVisual();
+                transform.GetChild(i).GetComponent<HexTile>().UpdateVisual();
             }
         }
     }

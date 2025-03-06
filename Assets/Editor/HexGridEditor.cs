@@ -16,11 +16,11 @@ public class HexGridEditor : Editor
             hexGrid.GenerateGrid();
         }
 
-        if (GUILayout.Button("Clear Grid"))
+        if (GUILayout.Button("Reset All Tiles"))
         {
             hexGrid.ClearGrid();
         }
-        if (GUILayout.Button("Update Grid Visuals"))
+        if (GUILayout.Button("Update Tiles"))
         {
             hexGrid.UpdateGridVisuals();
         }
@@ -30,7 +30,7 @@ public class HexGridEditor : Editor
             hexGrid.SaveGridAsPrefab();
         }
 
-        if (GUILayout.Button("Force Clear"))
+        if (GUILayout.Button("Delete Grid"))
         {
             hexGrid.ForceDeleteAllChildren();
         }
