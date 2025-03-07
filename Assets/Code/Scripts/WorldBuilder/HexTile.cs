@@ -1,8 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.XR;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public enum TileType
 {
@@ -32,12 +29,7 @@ public class HexTile : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D neighborDetector;
 
-    [SerializeField] private HexTile supportedTile = null;
-
-    [SerializeField] private HexTile waterConnectionTile = null;
-
-    [SerializeField] private List<HexTile> supportedOasisTiles = new List<HexTile>();
-    [SerializeField] int supportedOasisCount = 0;
+    [SerializeField] private List<HexTile> supportedTiles = new List<HexTile>();
 
     private void Start()
     {
@@ -56,39 +48,34 @@ public class HexTile : MonoBehaviour
     public void SetBiome(BiomeType biome)
     {
         currentBiome = biome;
+
+        //if (biome == BiomeType.Forest || biome == BiomeType.Oasis)
+        //{
+        //    HexTile waterTile = FindAvailableWaterTile();
+        //    if (waterTile != null)
+        //    {
+        //        waterTile.AddSupportedTile(this); 
+        //    }
+        //}
+
         CheckBiomeRules();
-        UpdateNeighbors();
+        // UpdateNeighbors();
     }
 
     public void SetOriginalBiome()
     {
-        currentBiome = BiomeType.None;
-        if (tileType == TileType.Default)
+        if (currentBiome == BiomeType.Forest || currentBiome == BiomeType.Oasis)
         {
             foreach (HexTile neighbor in neighbors)
             {
-                // Check if the neighbor is a Water tile and if its supportedTile is the same as the Default tile
-                if (neighbor.tileType == TileType.Water && neighbor.GetSupportedForest() == this)
-                {
-                    // Call RemoveSupportedForest on the Water tile
-                    neighbor.RemoveSupportedForest();
-                }
-            }
-        }
-        if (tileType == TileType.Desert)
-        {
-            //Debug.Log(neighbors.Count);
-            foreach (HexTile neighbor in neighbors)
-            {
-               // Debug.Log($"{neighbor.tileType}");
                 if (neighbor.tileType == TileType.Water)
                 {
-                    neighbor.DecreaseOasisSupport();
+                    neighbor.RemoveSupportedTile(this);
                 }
             }
         }
-
-        UpdateVisual();
+        currentBiome = BiomeType.None;
+        UpdateVisual(ConnectionStrength.Strong);
         UpdateNeighbors();
     }
 
@@ -129,39 +116,34 @@ public class HexTile : MonoBehaviour
     private void CheckBiomeRules()
     {
         strength = ConnectionStrength.Default;
+
         if (currentBiome == BiomeType.None)
         {
+            UpdateVisual(ConnectionStrength.Strong);
             return;
         }
 
-        Debug.Log("CALLED FOR TILE: " + name);
         switch (tileType)
         {
             case TileType.Desert:
-
                 if (currentBiome == BiomeType.Cave)
                 {
                     strength = HasNeighbor(TileType.Water) ? ConnectionStrength.Weak : ConnectionStrength.Strong;
                 }
                 else if (currentBiome == BiomeType.Oasis)
                 {
-                    HexTile waterTile = FindAvailableWaterTileForOasis();
-                    if (waterTile != null)
-                    {
-                        waterTile.IncreaseOasisSupport();
-                        strength = ConnectionStrength.Strong;
-                    }
-                    else
-                    {
-                        strength = ConnectionStrength.Weak;
-                    }
+                    HexTile waterTile = FindAvailableWaterTile();
+                    if (waterTile != null) CheckWaterTileForOasis(waterTile);
+                    //strength = waterTile != null ? ConnectionStrength.Strong : ConnectionStrength.Weak;
                 }
                 break;
 
             case TileType.Water:
                 if (currentBiome == BiomeType.Glacier)
                 {
+
                     strength = HasNeighbor(TileType.Desert) ? ConnectionStrength.Weak : ConnectionStrength.Strong;
+    
                 }
                 break;
 
@@ -175,56 +157,146 @@ public class HexTile : MonoBehaviour
             case TileType.Default:
                 if (currentBiome == BiomeType.Forest)
                 {
-                    HexTile waterTile = FindAvailableWaterTileForForest();
-
-                    //if (waterTile != null && waterTile.GetSupportedForest() != this)
-                    //{
-                    //    return;
-                    //}
-                    if (waterTile != null)
-                    {
-                        waterTile.SetSupportingForest(this);
-                        waterConnectionTile = waterTile;
-                        strength = ConnectionStrength.Strong;
-                    }
-                    else if(waterConnectionTile == null)
-                    {
-                        strength = ConnectionStrength.Weak;
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    Debug.Log("Forest time");
+                    HexTile waterTile = FindAvailableWaterTile();
+                    if (waterTile != null) CheckWaterTileForForest(waterTile);
+                    //strength = waterTile != null ? ConnectionStrength.Strong : ConnectionStrength.Weak;
                 }
                 break;
         }
-
+        Debug.Log("Current strength: " + strength);
         UpdateVisual(strength);
     }
 
-    private HexTile FindAvailableWaterTileForForest()
+    public List<HexTile> GetSupportedTiles()
+    {
+        return supportedTiles;
+    }
+
+    public void AddSupportedTile(HexTile tile)
+    {
+        if (!supportedTiles.Contains(tile))
+        {
+            supportedTiles.Add(tile);
+        }
+        UpdateSupportStrength();
+    }
+
+    public void RemoveSupportedTile(HexTile tile)
+    {
+        if (supportedTiles.Contains(tile))
+        {
+            supportedTiles.Remove(tile);
+        }
+        UpdateSupportStrength();
+    }
+
+    private void UpdateSupportStrength()
+    {
+        int forestCount = 0;
+        int oasisCount = 0;
+
+        // Count the number of forests and oases in supportedTiles
+        foreach (HexTile tile in supportedTiles)
+        {
+            if (tile.currentBiome == BiomeType.Forest)
+            {
+                forestCount++;
+            }
+            else if (tile.currentBiome == BiomeType.Oasis)
+            {
+                oasisCount++;
+            }
+        }
+
+        // Special case: Exactly 2 oases should remain strong
+        if (oasisCount == 2)
+        {
+            foreach (HexTile tile in supportedTiles)
+            {
+                if (tile.currentBiome == BiomeType.Oasis)
+                {
+                    tile.UpdateVisual(ConnectionStrength.Strong);
+                }
+            }
+        }
+        else
+        {
+            foreach (HexTile tile in supportedTiles)
+            {
+                if (forestCount > 1 || oasisCount >= 2 || (forestCount == 1 && oasisCount >= 1))
+                {
+                    tile.UpdateVisual(ConnectionStrength.Weak);
+                }
+                else
+                {
+                    //tile.UpdateVisual(ConnectionStrength.Strong); 
+                }
+            }
+        }
+    }
+
+    private HexTile FindAvailableWaterTile()
     {
         foreach (HexTile neighbor in neighbors)
         {
-            if (neighbor.tileType == TileType.Water && neighbor.GetSupportedForest() == null)
+            if (neighbor.tileType == TileType.Water)
             {
+                neighbor.AddSupportedTile(this);
                 return neighbor;
             }
         }
         return null;
     }
 
-    private HexTile FindAvailableWaterTileForOasis()
+    private void CheckWaterTileForForest(HexTile tileToCheck)
     {
-        foreach (HexTile neighbor in neighbors)
+        int supportedCount = 0;
+        foreach (HexTile supportedTile in tileToCheck.supportedTiles)
         {
-            if (neighbor.tileType == TileType.Water && neighbor.GetSupportedOasesCount() < 2 && neighbor.GetSupportedForest() == null)
+            supportedCount++;
+            if (supportedTile != this && supportedTile.currentBiome == BiomeType.Forest || supportedTile.currentBiome == BiomeType.Oasis || supportedCount > 1)
             {
-                return neighbor;
+                strength = ConnectionStrength.Weak;
+                supportedTile.UpdateVisual(ConnectionStrength.Weak);
             }
+
+            else
+            {
+                strength = ConnectionStrength.Strong;
+            }
+
         }
-        return null;
+
+        Debug.Log("Stength from checking water tile: " + strength);
     }
+
+    private void CheckWaterTileForOasis(HexTile tileToCheck)
+    {
+        int supportedOasisCount = 0;
+        foreach (HexTile supportedTile in tileToCheck.supportedTiles)
+        {
+            if (supportedTile.currentBiome == BiomeType.Oasis)
+            {
+                supportedOasisCount++;
+            }
+            if (supportedTile != this && supportedTile.currentBiome == BiomeType.Forest || supportedOasisCount > 2)
+            {
+                strength = ConnectionStrength.Weak;
+                supportedTile.UpdateVisual(ConnectionStrength.Weak);
+            }
+
+            else
+            {
+                strength = ConnectionStrength.Strong;
+            }
+
+        }
+
+        Debug.Log("Stength from checking water tile: " + strength);
+    }
+
+
 
     private bool HasNeighbor(TileType type)
     {
@@ -237,66 +309,6 @@ public class HexTile : MonoBehaviour
         }
         return false;
     }
-
-    public HexTile GetSupportedForest()
-    {
-        return supportedTile;
-    }
-
-    public int GetSupportedOasesCount()
-    {
-        return supportedOasisTiles.Count;
-    }
-
-    public void SetSupportingForest(HexTile _supportedTile)
-    {
-        supportedTile = _supportedTile;
-        //supportedTile = supportedForest;
-    }
-
-    public void RemoveSupportedForest()
-    {
-        supportedTile = null;
-    }
-
-
-    private void AddSupportedOasisTile(HexTile _supportedTile)
-    {
-        supportedOasisTiles.Add(_supportedTile);
-    }
-
-    private void RemoveSupportedoasisTile(HexTile _supportedTile)
-    {
-        supportedOasisTiles.Remove(_supportedTile);
-    }
-
-    public void IncreaseOasisSupport()
-    {
-        supportedOasisCount++;
-        Debug.Log("INCREASE OASIS COUNT: " + supportedOasisCount);
-    }
-
-    public void DecreaseOasisSupport()
-    {
-
-        supportedOasisCount--;
-        Debug.Log("DECREASE OASIS COUNT: " + supportedOasisCount);
-
-    }
-
-    private void RemoveForestSupportFromWaterTile()
-    {
-        foreach (HexTile neighbor in neighbors)
-        {
-            if (neighbor.tileType == TileType.Water && neighbor.GetSupportedForest() != null)
-            {
-                neighbor.RemoveSupportedForest();
-                neighbor.CheckBiomeRules();
-            }
-        }
-    }
-
-
 
     public void AssignNeighbors()
     {
@@ -313,11 +325,6 @@ public class HexTile : MonoBehaviour
         }
         // Disable the collider after assigning neighbors
         neighborDetector.enabled = false;
-    }
-
-    public void SetColor(Color color)
-    {
-        GetComponent<SpriteRenderer>().color = color;
     }
 
     private void UpdateNeighbors()
