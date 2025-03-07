@@ -178,7 +178,6 @@ public class Pests : MonoBehaviour
             PuzzleCompleated = true;
         }
     }
-
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -188,8 +187,16 @@ public class Pests : MonoBehaviour
             if (rectTransform == null) return;
         }
 
-        UnityEditor.Handles.color = Color.red;
-        UnityEditor.Handles.DrawWireDisc(rectTransform.position, Vector3.forward, detectionRadius);
+        // Get the Canvas scaler
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas != null && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+        {
+            float scaleFactor = canvas.scaleFactor; // Get the UI scale factor
+            float adjustedRadius = detectionRadius * scaleFactor; // Adjust radius
+
+            UnityEditor.Handles.color = Color.red;
+            UnityEditor.Handles.DrawWireDisc(rectTransform.position, Vector3.forward, adjustedRadius);
+        }
     }
 #endif
 }

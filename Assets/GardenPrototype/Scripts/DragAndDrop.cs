@@ -224,18 +224,22 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (rectTransform == null) return;
         }
 
+        // Get Canvas Scale Factor
+        Canvas canvas = GetComponentInParent<Canvas>();
+        float scaleFactor = (canvas != null) ? canvas.scaleFactor : 1f; // Avoid division by zero
+
         Vector3 position = rectTransform.position;
 
         if (protectsFromRat || protectsFromSnail)
         {
             UnityEditor.Handles.color = Color.green;
-            UnityEditor.Handles.DrawWireDisc(position, Vector3.forward, protectionRadius);
+            UnityEditor.Handles.DrawWireDisc(position, Vector3.forward, protectionRadius * scaleFactor);
         }
 
         if (protectFromRatAB)
         {
             UnityEditor.Handles.color = Color.green;
-            Vector3 size = new Vector3(protectionWidth, protectionHeight, 1);
+            Vector3 size = new Vector3(protectionWidth * scaleFactor, protectionHeight * scaleFactor, 1);
             UnityEditor.Handles.DrawWireCube(position, size);
         }
     }
