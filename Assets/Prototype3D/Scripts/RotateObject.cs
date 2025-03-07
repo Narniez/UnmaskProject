@@ -72,4 +72,9 @@ public class RotateObject : MonoBehaviour
     {
         CHANGE = false;
     }
+
+    public void MOVE()
+    {
+        canMove = !canMove;
+    }
 }
