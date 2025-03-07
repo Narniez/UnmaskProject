@@ -1111,6 +1111,93 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 739095191}
   m_CullTransparentMesh: 1
+--- !u!1 &748289467
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 748289469}
+  - component: {fileID: 748289468}
+  m_Layer: 0
+  m_Name: xMarkEnd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &748289468
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748289467}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300000, guid: deab83d7dd2091845a8a1bc915d4a806, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 5.12, y: 5.12}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &748289469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748289467}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5, y: 1.506, z: 0}
+  m_LocalScale: {x: 0.10905, y: 0.10905, z: 0.10905}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &781355031
 GameObject:
   m_ObjectHideFlags: 0
@@ -1387,6 +1474,93 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819214743}
   m_CullTransparentMesh: 1
+--- !u!1 &1048321612
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1048321614}
+  - component: {fileID: 1048321613}
+  m_Layer: 0
+  m_Name: xMarkStart
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!212 &1048321613
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048321612}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 21300000, guid: deab83d7dd2091845a8a1bc915d4a806, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 5.12, y: 5.12}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &1048321614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1048321612}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.017, y: 1.506, z: 0}
+  m_LocalScale: {x: 0.10905, y: 0.10905, z: 0.10905}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1070687588
 GameObject:
   m_ObjectHideFlags: 0
@@ -3408,7 +3582,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c0e8e4d909cab554d86313a0524d70b1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3431,13 +3605,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 0
+  tileType: 4
   currentBiome: 0
   position: {x: 1, y: 2}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!114 &228612049937824496
 MonoBehaviour:
@@ -3457,7 +3633,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &542393276100062892
 GameObject:
@@ -3516,7 +3694,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3625,7 +3803,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &771230145264411541
 PolygonCollider2D:
@@ -3934,7 +4114,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!114 &1439984787372859154
 MonoBehaviour:
@@ -3954,7 +4136,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &1516961053963864811
 GameObject:
@@ -4012,7 +4196,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &1633101566223394590
 GameObject:
@@ -4543,7 +4729,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &2778057992659089585
 SpriteRenderer:
@@ -4762,7 +4950,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &3166702640102543375
 GameObject:
@@ -4795,13 +4985,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 0
+  tileType: 4
   currentBiome: 0
   position: {x: 0, y: 1}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &3205322049648142422
 PolygonCollider2D:
@@ -4967,13 +5159,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 0
+  tileType: 4
   currentBiome: 0
   position: {x: 2, y: 2}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &3563659324945331758
 PolygonCollider2D:
@@ -5218,7 +5412,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5267,7 +5461,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -5306,7 +5500,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &4282363835229250594
 GameObject:
@@ -5568,7 +5764,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!114 &4796780516966914157
 MonoBehaviour:
@@ -5588,7 +5786,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &4963639440668221067
 PolygonCollider2D:
@@ -5667,7 +5867,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &5188328991455556061
 SpriteRenderer:
@@ -5850,13 +6052,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 0
+  tileType: 4
   currentBiome: 0
   position: {x: 2, y: 1}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!114 &5535874161516363903
 MonoBehaviour:
@@ -5876,7 +6080,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &5706492264904653335
 PolygonCollider2D:
@@ -5964,13 +6170,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 3
+  tileType: 4
   currentBiome: 0
   position: {x: 2, y: 0}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &5901662896373009541
 GameObject:
@@ -6123,7 +6331,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!4 &6007905120689446207
 Transform:
@@ -6366,7 +6576,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -6405,7 +6615,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &6210190932642449625
 SpriteRenderer:
@@ -6451,7 +6663,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6525,7 +6737,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &6251817276190909189
 SpriteRenderer:
@@ -6655,7 +6869,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &6478465779044942527
 SpriteRenderer:
@@ -6701,7 +6917,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6887,7 +7103,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -6945,7 +7161,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &6758539610776689049
 SpriteRenderer:
@@ -6991,7 +7209,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7075,7 +7293,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &6865473334587976323
 GameObject:
@@ -7507,7 +7727,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &7509122646423940661
 PolygonCollider2D:
@@ -7690,7 +7912,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1 &7867725697804266990
 GameObject:
@@ -7744,7 +7968,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &7883674219992960971
 SpriteRenderer:
@@ -7894,7 +8120,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -8014,7 +8240,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 638e4e87866654b49a50ba95e01e13d5, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b20639c2c9bfffb4bb0756b59a97db53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -8043,7 +8269,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!212 &8200611632415364839
 SpriteRenderer:
@@ -8182,7 +8410,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!4 &8832779390157263339
 Transform:
@@ -8321,13 +8551,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileType: 0
+  tileType: 4
   currentBiome: 0
   position: {x: 1, y: 4}
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!60 &9119283946093288356
 PolygonCollider2D:
@@ -8367,7 +8599,7 @@ PolygonCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.76, y: 0.88}
+    oldSize: {x: 0.87, y: 1.02}
     newSize: {x: 1, y: 0.8828125}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -8465,7 +8697,9 @@ MonoBehaviour:
   grid: {fileID: 2295803770324134906}
   spriteManager: {fileID: 11400000, guid: 67879f451f5df8a4188f2d14517f6515, type: 2}
   neighbors: []
-  isSupportingForest: 0
+  supportedTile: {fileID: 0}
+  waterConnectionTile: {fileID: 0}
+  supportedOasisTiles: []
   supportedOasisCount: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -8475,5 +8709,7 @@ SceneRoots:
   - {fileID: 646694680}
   - {fileID: 1432345431}
   - {fileID: 1080166656}
+  - {fileID: 1048321614}
+  - {fileID: 748289469}
   - {fileID: 6242415352533752349}
   - {fileID: 720512822}

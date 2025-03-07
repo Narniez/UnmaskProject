@@ -32,7 +32,9 @@ public class HexTile : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private CircleCollider2D neighborDetector;
 
-    private HexTile supportedTile = null;
+    [SerializeField] private HexTile supportedTile = null;
+
+    [SerializeField] private HexTile waterConnectionTile = null;
 
     [SerializeField] private List<HexTile> supportedOasisTiles = new List<HexTile>();
     [SerializeField] int supportedOasisCount = 0;
@@ -174,14 +176,24 @@ public class HexTile : MonoBehaviour
                 if (currentBiome == BiomeType.Forest)
                 {
                     HexTile waterTile = FindAvailableWaterTileForForest();
+
+                    //if (waterTile != null && waterTile.GetSupportedForest() != this)
+                    //{
+                    //    return;
+                    //}
                     if (waterTile != null)
                     {
                         waterTile.SetSupportingForest(this);
+                        waterConnectionTile = waterTile;
                         strength = ConnectionStrength.Strong;
+                    }
+                    else if(waterConnectionTile == null)
+                    {
+                        strength = ConnectionStrength.Weak;
                     }
                     else
                     {
-                        strength = ConnectionStrength.Weak;
+                        return;
                     }
                 }
                 break;
@@ -194,7 +206,7 @@ public class HexTile : MonoBehaviour
     {
         foreach (HexTile neighbor in neighbors)
         {
-            if (neighbor.tileType == TileType.Water && neighbor.GetSupportedForest() == null && neighbor.GetSupportedOasesCount() == 0)
+            if (neighbor.tileType == TileType.Water && neighbor.GetSupportedForest() == null)
             {
                 return neighbor;
             }
