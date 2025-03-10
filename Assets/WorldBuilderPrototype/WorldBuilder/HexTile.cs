@@ -17,7 +17,7 @@ public class HexTile : MonoBehaviour
     //ENUMS
     public TileType tileType = TileType.Default;
     public BiomeType currentBiome = BiomeType.None;
-    private ConnectionStrength strength = ConnectionStrength.Default;
+    [SerializeField] private ConnectionStrength strength = ConnectionStrength.Default;
 
     //SERIALIZABLES
     [SerializeField] private Vector2Int position;
@@ -107,28 +107,38 @@ public class HexTile : MonoBehaviour
         }
     }
 
-    private void UpdateVisual(ConnectionStrength strength)
+    public void UpdateVisual(ConnectionStrength _strength)
     {
+        strength = _strength;
         if (!spriteRenderer) spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = spriteManager.GetSprite(tileType, currentBiome, strength);
+        //Debug.Log("Current strength for tile " + this.name + " : " + strength);
     }
 
     private void CheckBiomeRules()
     {
         strength = ConnectionStrength.Default;
-
+        
         if (currentBiome == BiomeType.None)
         {
             UpdateVisual(ConnectionStrength.Strong);
+           
             return;
         }
 
         switch (tileType)
         {
+
             case TileType.Desert:
                 if (currentBiome == BiomeType.Cave)
                 {
-                    strength = HasNeighbor(TileType.Water) ? ConnectionStrength.Weak : ConnectionStrength.Strong;
+                    HexTile waterTile = FindAvailableWaterTile();
+
+                    if(waterTile!= null) CheckWaterTileForCave(waterTile);
+                    else
+                    {
+                        strength = ConnectionStrength.Strong;
+                    }
                 }
                 else if (currentBiome == BiomeType.Oasis)
                 {
@@ -143,6 +153,13 @@ public class HexTile : MonoBehaviour
                 {
 
                     strength = HasNeighbor(TileType.Desert) ? ConnectionStrength.Weak : ConnectionStrength.Strong;
+                    if (GetNeighboursByBiome(BiomeType.Cave).Count != 0)
+                    {
+                        foreach(HexTile cave in GetNeighboursByBiome(BiomeType.Cave))
+                        {
+                            cave.UpdateVisual(ConnectionStrength.Strong);
+                        }
+                    }
     
                 }
                 break;
@@ -150,7 +167,13 @@ public class HexTile : MonoBehaviour
             case TileType.Mountain:
                 if (currentBiome == BiomeType.Cave)
                 {
-                    strength = HasNeighbor(TileType.Water) ? ConnectionStrength.Weak : ConnectionStrength.Strong;
+                    HexTile waterTile = FindAvailableWaterTile();
+
+                    if (waterTile != null) CheckWaterTileForCave(waterTile);
+                    else
+                    {
+                        strength = ConnectionStrength.Strong;
+                    }
                 }
                 break;
 
@@ -160,11 +183,15 @@ public class HexTile : MonoBehaviour
                     Debug.Log("Forest time");
                     HexTile waterTile = FindAvailableWaterTile();
                     if (waterTile != null) CheckWaterTileForForest(waterTile);
+                    else
+                    {
+                        strength = ConnectionStrength.Weak;
+                    }
                     //strength = waterTile != null ? ConnectionStrength.Strong : ConnectionStrength.Weak;
                 }
                 break;
         }
-        Debug.Log("Current strength: " + strength);
+        
         UpdateVisual(strength);
     }
 
@@ -296,7 +323,17 @@ public class HexTile : MonoBehaviour
         Debug.Log("Stength from checking water tile: " + strength);
     }
 
-
+    private void CheckWaterTileForCave(HexTile tileToCheck)
+    {
+        if(tileToCheck.currentBiome == BiomeType.Glacier)
+        {
+            strength = ConnectionStrength.Strong;
+        }
+        else
+        {
+            strength = ConnectionStrength.Weak;
+        }
+    }
 
     private bool HasNeighbor(TileType type)
     {
@@ -308,6 +345,20 @@ public class HexTile : MonoBehaviour
             }
         }
         return false;
+    }
+
+
+    private List<HexTile> GetNeighboursByBiome(BiomeType biome)
+    {
+        List<HexTile> caveTiles = new List<HexTile> ();
+        foreach (HexTile neighbor in neighbors)
+        {
+            if(neighbor.currentBiome == biome)
+            {
+                caveTiles.Add(neighbor);
+            }
+        }
+        return caveTiles;
     }
 
     public void AssignNeighbors()
@@ -343,5 +394,14 @@ public class HexTile : MonoBehaviour
     public List<HexTile> GetNeighbors()
     {
         return neighbors;
+    }
+    public ConnectionStrength GetStrength()
+    {
+        return strength;
+    }
+
+    public void UpdateStrength(ConnectionStrength _strength)
+    {
+        strength = _strength;
     }
 }

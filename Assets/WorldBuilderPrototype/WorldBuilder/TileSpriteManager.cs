@@ -4,6 +4,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "TileSpriteManager", menuName = "Scriptable Objects/TileSpriteManager")]
 public class TileSpriteManager : ScriptableObject
 {
+    public int weakConnections = 0;
     [System.Serializable]
     public class BiomeSprites
     {

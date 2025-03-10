@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 [ExecuteInEditMode]
 public class HexGrid : MonoBehaviour
@@ -13,12 +15,14 @@ public class HexGrid : MonoBehaviour
 
 
     private Dictionary<Vector2Int, HexTile> hexTiles = new Dictionary<Vector2Int, HexTile>();
+
+    private HexTile[] allTiles;
     private HexTile clickedTile;
 
     private void Start()
     {
         UpdateGridVisuals();
-
+        allTiles = GetComponentsInChildren<HexTile>();
     }
 
     public void GenerateGrid()
@@ -137,6 +141,15 @@ public class HexGrid : MonoBehaviour
         //}
 
         //return new Vector3(worldX, -worldY, 0); // Flip Y if necessary
+    }
+
+    public List<HexTile> GetAllGridTiles()
+    {
+
+        // Convert the array to a list
+        List<HexTile> hexTileList = allTiles.ToList();
+
+        return hexTileList;
     }
 
 }

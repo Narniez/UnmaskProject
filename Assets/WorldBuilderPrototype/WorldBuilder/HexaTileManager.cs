@@ -1,11 +1,16 @@
+using NUnit.Framework;
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum BiomeType { None, Forest, Cave, Glacier, Oasis }
 
 public class HexaTileManager : MonoBehaviour
 {
+    public int weakConnections = 0;
 
     [SerializeField] private HexGrid grid;
     public GameObject biomeMenu;
@@ -22,6 +27,15 @@ public class HexaTileManager : MonoBehaviour
 
     public GameObject puzzleCorrectPannel;
     public GameObject puzzleWrongPannel;
+    public GameObject puzzleWithWeakConnections;
+
+    public GameObject connectionSurvivedPannel;
+    public GameObject connectionLostPannel;
+
+
+    [SerializeField] private List<HexTile> weakConnectionTiles = new List<HexTile>();
+
+ 
 
     private void Start()
     {
@@ -151,9 +165,14 @@ public class HexaTileManager : MonoBehaviour
 
     public void CheckPuzzle()
     {
-        if (pathfinder.IsPathConnected())
+        CheckConnections();
+        if (pathfinder.IsPathConnected() && weakConnections == 0)
         {
             StartCoroutine(ShowPannel(5f, puzzleCorrectPannel));
+        }
+        if(pathfinder.IsPathConnected() && weakConnections >= 1)
+        {
+            StartCoroutine(ShowPannel(6f, puzzleWithWeakConnections));
         }
         else
         {
@@ -163,6 +182,7 @@ public class HexaTileManager : MonoBehaviour
 
     private IEnumerator ShowPannel(float waitTime, GameObject pannel)
     {
+       
         pannel.SetActive(true);
 
         yield return new WaitForSeconds(waitTime);
@@ -170,4 +190,50 @@ public class HexaTileManager : MonoBehaviour
         pannel.SetActive(false);
     }
 
+    private void CheckConnections()
+    {
+        weakConnections = 0;
+        weakConnectionTiles.Clear();
+        foreach (HexTile tile in grid.GetAllGridTiles())
+        {
+           
+            if(tile.GetStrength() == ConnectionStrength.Weak)
+            {
+                weakConnections++;
+                weakConnectionTiles.Add(tile);
+                tile.GetComponent<PolygonCollider2D>().enabled = false;
+                tile.transform.GetChild(1).gameObject.SetActive(true);
+            }
+            if(tile.GetStrength() == ConnectionStrength.Strong)
+            {
+                tile.transform.GetChild(0).gameObject.SetActive(true);
+            }
+        }
+        //Debug.Log(weakConnections);
+    }
+
+    public void CheckDiceRoll(int roll, HexTile tile)
+    {
+        tile.GetComponentInChildren<PolygonCollider2D>().enabled = false;
+        if (roll <= 3)
+        {
+            Destroy(biomeMenu);
+            tile.UpdateVisual(ConnectionStrength.Bad);
+            connectionLostPannel.SetActive(true);
+            return;
+            
+        }
+        else if(roll >3 && weakConnections > 0)
+        {
+            StartCoroutine(ShowPannel(2.5f, connectionSurvivedPannel));
+            tile.transform.GetChild(1).gameObject.SetActive(false);
+            tile.transform.GetChild(0).gameObject.SetActive(true);
+            tile.UpdateStrength(ConnectionStrength.Strong);
+        }
+    }
+
+    public void RestatLevel()
+    {
+        SceneManager.LoadScene(7);
+    }
 }
