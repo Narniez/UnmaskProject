@@ -166,11 +166,11 @@ public class HexaTileManager : MonoBehaviour
     public void CheckPuzzle()
     {
         CheckConnections();
-        if (pathfinder.IsPathConnected() && weakConnections == 0)
+        if (pathfinder.FindPath().Count > 1 && weakConnections == 0)
         {
             StartCoroutine(ShowPannel(5f, puzzleCorrectPannel));
         }
-        if(pathfinder.IsPathConnected() && weakConnections >= 1)
+        if(pathfinder.FindPath() != null && weakConnections >= 1)
         {
             StartCoroutine(ShowPannel(6f, puzzleWithWeakConnections));
         }
@@ -194,7 +194,7 @@ public class HexaTileManager : MonoBehaviour
     {
         weakConnections = 0;
         weakConnectionTiles.Clear();
-        foreach (HexTile tile in grid.GetAllGridTiles())
+        foreach (HexTile tile in pathfinder.FindPath())
         {
            
             if(tile.GetStrength() == ConnectionStrength.Weak)

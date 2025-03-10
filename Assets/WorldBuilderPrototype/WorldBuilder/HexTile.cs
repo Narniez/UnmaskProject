@@ -265,15 +265,30 @@ public class HexTile : MonoBehaviour
 
     private HexTile FindAvailableWaterTile()
     {
+        HexTile bestWaterTile = null;
+        int minSupportedTiles = int.MaxValue;
+        bool foundWaterTile = false;  
+
         foreach (HexTile neighbor in neighbors)
         {
             if (neighbor.tileType == TileType.Water)
             {
-                neighbor.AddSupportedTile(this);
-                return neighbor;
+                foundWaterTile = true; 
+                int supportedCount = neighbor.GetSupportedTiles().Count;
+
+                if (supportedCount < minSupportedTiles)
+                {
+                    minSupportedTiles = supportedCount;
+                    bestWaterTile = neighbor;
+                }
             }
         }
-        return null;
+
+        if (!foundWaterTile) return null;
+
+        bestWaterTile?.AddSupportedTile(this);
+
+        return bestWaterTile;
     }
 
     private void CheckWaterTileForForest(HexTile tileToCheck)
