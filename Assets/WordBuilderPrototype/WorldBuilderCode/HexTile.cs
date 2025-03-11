@@ -31,6 +31,10 @@ public class HexTile : MonoBehaviour
 
     [SerializeField] private List<HexTile> supportedTiles = new List<HexTile>();
 
+    public bool canBeClicked = true;
+
+    public bool canShowCave = true;
+
     private void Start()
     {
         neighborDetector = gameObject.AddComponent<CircleCollider2D>();
@@ -186,6 +190,12 @@ public class HexTile : MonoBehaviour
                     else
                     {
                         strength = ConnectionStrength.Weak;
+                    }
+
+                    if (HasNeighbor(TileType.Volcano))
+                    {
+                        UpdateVisual(ConnectionStrength.Weak);
+                        return;
                     }
                     //strength = waterTile != null ? ConnectionStrength.Strong : ConnectionStrength.Weak;
                 }

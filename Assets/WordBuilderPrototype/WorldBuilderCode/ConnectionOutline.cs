@@ -22,6 +22,7 @@ public class ConnectionOutline : MonoBehaviour
         if (diceRollUIManager != null)
         {
             diceRollUIManager.StartDiceRoll(hexTile);  // Pass tile's world position
+           // Debug.Log("Should start dice roll!");
         }
         else
         {

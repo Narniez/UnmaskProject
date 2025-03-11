@@ -35,7 +35,7 @@ public class HexaTileManager : MonoBehaviour
 
     [SerializeField] private List<HexTile> weakConnectionTiles = new List<HexTile>();
 
- 
+
 
     private void Start()
     {
@@ -59,6 +59,7 @@ public class HexaTileManager : MonoBehaviour
                 if (_clickedTile != null)
                 {
                     clickedTile = _clickedTile;
+                    //Debug.Log("Clicked tile type:" + clickedTile.GetTileType());
                     OnTileClicked(clickedTile);
                 }
             }
@@ -130,8 +131,12 @@ public class HexaTileManager : MonoBehaviour
                 break;
 
             case TileType.Desert:
+                caveButton.gameObject.SetActive(false);
                 forestButton.gameObject.SetActive(false);
-                caveButton.gameObject.SetActive(true);
+                if (clickedTile.canShowCave)
+                {
+                    caveButton.gameObject.SetActive(true);
+                }
                 glacierButton.gameObject.SetActive(false);
                 oasisButton.gameObject.SetActive(true);
                 break;
@@ -158,8 +163,9 @@ public class HexaTileManager : MonoBehaviour
 
     public void OnTileClicked(HexTile tile)
     {
+        if (!tile.canBeClicked) return;
         clickedTile = tile;
-        UpdateMenuButtons(tile.GetTileType());
+        UpdateMenuButtons(clickedTile.GetTileType());
         biomeMenu.SetActive(true);
     }
 
@@ -170,7 +176,7 @@ public class HexaTileManager : MonoBehaviour
         {
             StartCoroutine(ShowPannel(5f, puzzleCorrectPannel));
         }
-        if(pathfinder.FindPath() != null && weakConnections >= 1)
+        else if (pathfinder.FindPath() != null && weakConnections >= 1)
         {
             StartCoroutine(ShowPannel(6f, puzzleWithWeakConnections));
         }
@@ -182,7 +188,7 @@ public class HexaTileManager : MonoBehaviour
 
     private IEnumerator ShowPannel(float waitTime, GameObject pannel)
     {
-       
+
         pannel.SetActive(true);
 
         yield return new WaitForSeconds(waitTime);
@@ -196,15 +202,15 @@ public class HexaTileManager : MonoBehaviour
         weakConnectionTiles.Clear();
         foreach (HexTile tile in pathfinder.FindPath())
         {
-           
-            if(tile.GetStrength() == ConnectionStrength.Weak)
+
+            if (tile.GetStrength() == ConnectionStrength.Weak)
             {
                 weakConnections++;
                 weakConnectionTiles.Add(tile);
                 tile.GetComponent<PolygonCollider2D>().enabled = false;
                 tile.transform.GetChild(1).gameObject.SetActive(true);
             }
-            if(tile.GetStrength() == ConnectionStrength.Strong)
+            if (tile.GetStrength() == ConnectionStrength.Strong)
             {
                 tile.transform.GetChild(0).gameObject.SetActive(true);
             }
@@ -221,9 +227,9 @@ public class HexaTileManager : MonoBehaviour
             tile.UpdateVisual(ConnectionStrength.Bad);
             connectionLostPannel.SetActive(true);
             return;
-            
+
         }
-        else if(roll >3 && weakConnections > 0)
+        else if (roll > 3 && weakConnections > 0)
         {
             StartCoroutine(ShowPannel(2.5f, connectionSurvivedPannel));
             tile.transform.GetChild(1).gameObject.SetActive(false);
@@ -232,8 +238,8 @@ public class HexaTileManager : MonoBehaviour
         }
     }
 
-    public void RestatLevel()
+    public void RestatLevel(int sceneNum)
     {
-        SceneManager.LoadScene(7);
+        SceneManager.LoadScene(sceneNum);
     }
 }

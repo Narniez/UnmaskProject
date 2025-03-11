@@ -8,7 +8,7 @@ public class HexTilePathfinder : MonoBehaviour
     public List<HexTile> FindPath()
     {
         List<HexTile> path = new List<HexTile>();
-        if (startTile == null || endTile == null) return path;
+        if (startTile == null || endTile == null || startTile.currentBiome == BiomeType.None || endTile.currentBiome == BiomeType.None) return path;
 
         Queue<HexTile> queue = new Queue<HexTile>();
         HashSet<HexTile> visited = new HashSet<HexTile>();
