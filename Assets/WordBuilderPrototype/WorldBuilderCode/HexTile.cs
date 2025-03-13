@@ -184,7 +184,7 @@ public class HexTile : MonoBehaviour
             case TileType.Default:
                 if (currentBiome == BiomeType.Forest)
                 {
-                    Debug.Log("Forest time");
+                    //Debug.Log("Forest time");
                     HexTile waterTile = FindAvailableWaterTile();
                     if (waterTile != null) CheckWaterTileForForest(waterTile);
                     else
@@ -320,7 +320,7 @@ public class HexTile : MonoBehaviour
 
         }
 
-        Debug.Log("Stength from checking water tile: " + strength);
+        //Debug.Log("Stength from checking water tile: " + strength);
     }
 
     private void CheckWaterTileForOasis(HexTile tileToCheck)

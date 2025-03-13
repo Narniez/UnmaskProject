@@ -4,10 +4,11 @@ using System.Collections;
 
 public class ConnectionOutline : MonoBehaviour
 {
-    private HexaTileManager hexTileManager;  // Reference to HexTileManager
-   [SerializeField] private HexTile hexTile;  // Reference to HexTile
+    private HexaTileManager hexTileManager;  
+   [SerializeField] private HexTile hexTile;  
 
-    private DiceRollUIManager diceRollUIManager;  // Reference to DiceRollUIManager
+    private DiceRollUIManager diceRollUIManager;
+
 
     private void OnEnable()
     {
@@ -18,15 +19,16 @@ public class ConnectionOutline : MonoBehaviour
 
     private void OnMouseDown()
     {
+        //Debug.Log("Clicking on tile!");
         // Trigger dice roll when the outline is clicked
-        if (diceRollUIManager != null)
+        if (diceRollUIManager != null && hexTile != null)
         {
-            diceRollUIManager.StartDiceRoll(hexTile);  // Pass tile's world position
-           // Debug.Log("Should start dice roll!");
+            diceRollUIManager.StartDiceRoll(hexTile); 
+           //Debug.Log("Should start dice roll!");
         }
         else
         {
-            Debug.LogError("DiceRollUIManager not found!");
+            Debug.LogError("DiceRollUIManager or HexTile not found!");
         }
     }
 
