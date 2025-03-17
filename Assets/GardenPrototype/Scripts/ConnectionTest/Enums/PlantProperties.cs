@@ -1,6 +1,4 @@
-﻿using System;
-
-[Flags]
+﻿[System.Flags]
 public enum PlantProperties
 {
     Normal = 0,

@@ -1,31 +1,22 @@
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-    private RectTransform rectTransform;
+    private RectTransform currentPosition;
     private Canvas canvas;
     private Vector2 originalPosition;
     private Image rangeDisplay;
 
-    public bool normal, shade, sun, wet, dry;
-    public bool RatEats, SnailEats;
-    public bool protectedRat, protectedSnail;
-
-    public bool protectsFromRat, protectsFromSnail;  // circular protection
-    public bool protectFromRatAB; //above-below protection
-
-    [SerializeField] private float protectionRadius = 169f; // circular protection range
-    [SerializeField] private float protectionWidth = 200f;  // rectangular protection width
-    [SerializeField] private float protectionHeight = 150f; // rectangular protection height
+    [SerializeField] private Plant _plant;
 
     private void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
+        currentPosition = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
-        originalPosition = rectTransform.anchoredPosition;
+        originalPosition = currentPosition.anchoredPosition;
 
         Transform childTransform = transform.Find("RangeDisplay");
         if (childTransform != null)
@@ -38,194 +29,95 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             rangeDisplay.gameObject.SetActive(false);
         }
     }
-
     public void OnPointerDown(PointerEventData eventData)
     {
         if (rangeDisplay != null)
         {
             rangeDisplay.gameObject.SetActive(true);
         }
+
+        foreach (ImprovedPlantSpot spot in FindObjectsByType<ImprovedPlantSpot>(FindObjectsSortMode.None))
+        {
+            if (!spot.IsOccupied) continue;
+
+            if (spot.CurrentPlant == _plant)
+            {
+                spot.RemovePlant();
+                break;
+            }
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         if (canvas == null) return;
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        currentPosition.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        Transform closestSpot = FindMatchingPlantSpot();
-        if (closestSpot != null)
+        foreach (ImprovedPlantSpot spot in FindObjectsByType<ImprovedPlantSpot>(FindObjectsSortMode.None))
         {
-            rectTransform.position = closestSpot.position;
+            if (spot.IsOccupied) continue;
 
-            // Mark the spot as occupied
-            PlantSpotVar spotData = closestSpot.GetComponent<PlantSpotVar>();
-            if (spotData != null)
-            {
-                spotData.isOccupied = true;
-            }
-
-            // Apply protection to all plants when a new plant is placed
-            UpdateAllPlantProtections();
-
-            if (rangeDisplay != null)
-            {
-                rangeDisplay.gameObject.SetActive(true);
-            }
-        }
-        else
-        {
-            // Reset protection if returning to the original position
-            ResetProtection();
-            rectTransform.anchoredPosition = originalPosition;
-
-            if (rangeDisplay != null)
-            {
-                rangeDisplay.gameObject.SetActive(false);
-            }
-        }
-    }
-
-    private void UpdateAllPlantProtections()
-    {
-        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-
-        // Reset protection for all plants first
-        foreach (GameObject plant in plants)
-        {
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-            if (plantVars != null)
-            {
-                plantVars.protectedRat = false;
-                plantVars.protectedSnail = false;
-            }
-        }
-
-        // Reapply protection based on the current state of the scene
-        foreach (GameObject plant in plants)
-        {
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-            if (plantVars != null)
-            {
-                plantVars.ApplyProtection();
-            }
-        }
-    }
-
-    private Transform FindMatchingPlantSpot()
-    {
-        GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
-        foreach (GameObject spot in plantSpots)
-        {
             RectTransform spotRect = spot.GetComponent<RectTransform>();
-            PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
 
-            // Check if spot is valid and not occupied
-            if (spotData != null && !spotData.isOccupied && RectTransformUtility.RectangleContainsScreenPoint(spotRect, rectTransform.position, canvas.worldCamera))
+            if (RectTransformUtility.RectangleContainsScreenPoint(spotRect, currentPosition.position, canvas.worldCamera))
             {
-                if (MatchesPlantSpot(spotData))
+                if (spot.TrySetPlant(_plant))
                 {
-                    return spot.transform;
+                    currentPosition.position = spot.transform.position;
+
+                    if (rangeDisplay != null)
+                    {
+                        rangeDisplay.gameObject.SetActive(true);
+                    }
+                    return;
                 }
             }
         }
-        return null;
+        ResetPos();
     }
 
-    private bool MatchesPlantSpot(PlantSpotVar spot)
+    void ResetPos()
     {
-        return (normal && spot.normal) || (shade && spot.shade) || (sun && spot.sun) || (wet && spot.wet) || (dry && spot.dry);
-    }
+        currentPosition.anchoredPosition = originalPosition;
 
-    private void ApplyProtection()
-    {
-        GameObject[] plants = GameObject.FindGameObjectsWithTag("Plant");
-        foreach (GameObject plant in plants)
+        if (rangeDisplay != null)
         {
-            if (plant == this.gameObject) continue;
-
-            RectTransform plantRect = plant.GetComponent<RectTransform>();
-            DragAndDrop plantVars = plant.GetComponent<DragAndDrop>();
-
-            if (plantVars != null && (IsInCircleRange(plantRect) || IsInBoxRange(plantRect)))
-            {
-                if (protectsFromRat || protectFromRatAB)  // Protect from Rat in either range
-                {
-                    plantVars.protectedRat = true;
-                }
-                if (protectsFromSnail)  // Protect from Snail only in circular range
-                {
-                    plantVars.protectedSnail = true;
-                }
-            }
+            rangeDisplay.gameObject.SetActive(false);
         }
     }
 
-    private bool IsInCircleRange(RectTransform plantRect)
-    {
-        float distance = Vector2.Distance(rectTransform.anchoredPosition, plantRect.anchoredPosition);
-        return protectsFromRat || protectsFromSnail ? distance < protectionRadius : false;
-    }
 
-    private bool IsInBoxRange(RectTransform plantRect)
-    {
-        if (!protectFromRatAB) return false;  // Only check if protectFromRatAB is true
-
-        float xDifference = Mathf.Abs(plantRect.anchoredPosition.x - rectTransform.anchoredPosition.x);
-        float yDifference = Mathf.Abs(plantRect.anchoredPosition.y - rectTransform.anchoredPosition.y);
-
-        return xDifference < (protectionWidth / 2) && yDifference < (protectionHeight / 2);
-    }
-
-    private void ResetProtection()
-    {
-        protectedRat = false;
-        protectedSnail = false;
-
-        // Free up the spot when plant is removed
-        GameObject[] plantSpots = GameObject.FindGameObjectsWithTag("PlantSpot");
-        foreach (GameObject spot in plantSpots)
-        {
-            if (Vector2.Distance(spot.transform.position, rectTransform.position) < 10f)
-            {
-                PlantSpotVar spotData = spot.GetComponent<PlantSpotVar>();
-                if (spotData != null)
-                {
-                    spotData.isOccupied = false;
-                }
-            }
-        }
-    }
-
-#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
-        if (!protectsFromRat && !protectsFromSnail && !protectFromRatAB) return;
+        if (!_plant.Protection.DoesProtect) return;
 
-        if (rectTransform == null)
+        if (currentPosition == null) return;
+
+        switch (_plant.Protection.Type)
         {
-            rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null) return;
-        }
-
-        Vector3 position = rectTransform.position;
-
-        // Draw circular protection if enabled
-        if (protectsFromRat || protectsFromSnail)
-        {
-            UnityEditor.Handles.color = Color.green;
-            UnityEditor.Handles.DrawWireDisc(position, Vector3.forward, protectionRadius);
-        }
-
-        // Draw box protection if enabled
-        if (protectFromRatAB)
-        {
-            UnityEditor.Handles.color = Color.green;
-            Vector3 size = new Vector3(protectionWidth, protectionHeight, 1);
-            UnityEditor.Handles.DrawWireCube(position, size);
+            case ProtectionType.Circular:
+                DrawCircularProtection(_plant.Protection.EffectiveUnits);
+                break;
+            case ProtectionType.AboveBelow:
+                DrawBoxProtection(new(50, _plant.Protection.EffectiveUnits));
+                break;
+            case ProtectionType.LeftRight:
+                DrawBoxProtection(new(_plant.Protection.EffectiveUnits, 50));
+                break;
         }
     }
-#endif
+    private void DrawCircularProtection(float radius)
+    {
+        Handles.color = Color.green;
+        Handles.DrawWireDisc(currentPosition.position, Vector3.forward, radius);
+    }
+
+    private void DrawBoxProtection(Vector2 size)
+    {
+        Handles.color = Color.yellow;
+        Handles.DrawWireCube(currentPosition.position, size);
+    }
 }
