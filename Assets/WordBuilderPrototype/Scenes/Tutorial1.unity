@@ -368,18 +368,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5856557101777390985, guid: 9d92fd5fbf929c0489f94fc9db9267e5, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.4382306
-      objectReference: {fileID: 0}
-    - target: {fileID: 5856557101777390985, guid: 9d92fd5fbf929c0489f94fc9db9267e5, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1.4382306
-      objectReference: {fileID: 0}
-    - target: {fileID: 5856557101777390985, guid: 9d92fd5fbf929c0489f94fc9db9267e5, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.4382306
-      objectReference: {fileID: 0}
-    - target: {fileID: 5856557101777390985, guid: 9d92fd5fbf929c0489f94fc9db9267e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.31
       objectReference: {fileID: 0}
@@ -450,6 +438,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ed9b08b8a22e74199073a17b6d9b5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1152254412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1152254414}
+  - component: {fileID: 1152254413}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1152254413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1152254412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caae3b807fc32bd42bf5910d82795a61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canInteractWithTiles: 1
+--- !u!4 &1152254414
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1152254412}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 461.5, y: 459.255, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1432345428
 GameObject:
   m_ObjectHideFlags: 0
@@ -1937,8 +1970,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3115,3 +3148,4 @@ SceneRoots:
   - {fileID: 4827072271028520159}
   - {fileID: 1103639970}
   - {fileID: 5039820501302148550}
+  - {fileID: 1152254414}

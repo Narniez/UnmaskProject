@@ -25,6 +25,8 @@ public class DiceRollUIManager : MonoBehaviour
 
     private IEnumerator RollDice(HexTile tile)
     {
+        WBGameManager.Instance.canInteractWithTiles = false;
+        tile.canBeClicked = false;
         float rollDuration = 3f;
         float elapsedTime = 0f;
 

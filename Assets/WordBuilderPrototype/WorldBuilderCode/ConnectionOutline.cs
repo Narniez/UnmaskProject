@@ -19,10 +19,12 @@ public class ConnectionOutline : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!hexTile.canBeClicked || !WBGameManager.Instance.canInteractWithTiles) return;
         //Debug.Log("Clicking on tile!");
         // Trigger dice roll when the outline is clicked
         if (diceRollUIManager != null && hexTile != null)
         {
+           
             diceRollUIManager.StartDiceRoll(hexTile); 
            //Debug.Log("Should start dice roll!");
         }

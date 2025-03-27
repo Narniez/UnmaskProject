@@ -15,6 +15,7 @@ public class HexaTileManager : MonoBehaviour
     [SerializeField] private HexGrid grid;
     public GameObject biomeMenu;
     private HexTile clickedTile;
+    private HexTile previouslyClickedTile;
 
     private Button forestButton;
     private Button caveButton;
@@ -164,7 +165,17 @@ public class HexaTileManager : MonoBehaviour
     public void OnTileClicked(HexTile tile)
     {
         if (!tile.canBeClicked) return;
+
+        if (previouslyClickedTile != null && previouslyClickedTile != tile)
+        {
+            previouslyClickedTile.transform.GetChild(2).gameObject.SetActive(false);
+        }
+
         clickedTile = tile;
+
+        tile.transform.GetChild(2).gameObject.SetActive(true);
+        previouslyClickedTile = tile;
+
         UpdateMenuButtons(clickedTile.GetTileType());
         biomeMenu.SetActive(true);
     }
@@ -202,6 +213,7 @@ public class HexaTileManager : MonoBehaviour
         weakConnectionTiles.Clear();
         foreach (HexTile tile in pathfinder.FindPath())
         {
+            tile.transform.GetChild(2).gameObject.SetActive(false);
 
             if (tile.GetStrength() == ConnectionStrength.Weak)
             {
@@ -220,7 +232,6 @@ public class HexaTileManager : MonoBehaviour
 
     public void CheckDiceRoll(int roll, HexTile tile)
     {
-        tile.GetComponentInChildren<PolygonCollider2D>().enabled = false;
         if (roll <= 3)
         {
             Destroy(biomeMenu);
@@ -236,6 +247,8 @@ public class HexaTileManager : MonoBehaviour
             tile.transform.GetChild(0).gameObject.SetActive(true);
             tile.UpdateStrength(ConnectionStrength.Strong);
         }
+
+        WBGameManager.Instance.canInteractWithTiles = true;
     }
 
     public void RestatLevel(int sceneNum)
