@@ -8,6 +8,7 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     private Canvas canvas;
     private Vector2 originalPosition;
     private Image rangeDisplay;
+    private CanvasGroup canvasGroup;
 
     public bool normal, sun, wet, dry;
 
@@ -23,6 +24,15 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         rectTransform = GetComponent<RectTransform>();
         canvas = GetComponentInParent<Canvas>();
         originalPosition = rectTransform.anchoredPosition;
+
+        canvasGroup = gameObject.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+        }
+
+        // Initialize as non-interactable
+        SetInteractable(false);
 
         soundManagerAudioSource = GameObject.Find("SoundManager")?.GetComponent<AudioSource>();
 
@@ -46,15 +56,13 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (isPlaced)
+        if (isPlaced || !canvasGroup.interactable)
         {
-            return; // Ignore if the plant has been placed
+            return;
         }
 
-        // Check if this plant is the next one to be placed
         if (!gridLetterFiller.IsNextPlantToPlace(transform))
         {
-            Debug.Log($"Cannot drag {gameObject.name}: It is not the next plant to place.");
             return;
         }
 
@@ -66,7 +74,7 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (isPlaced)
+        if (isPlaced || !canvasGroup.interactable)
         {
             return;
         }
@@ -77,7 +85,7 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (isPlaced)
+        if (isPlaced || !canvasGroup.interactable)
         {
             return;
         }
@@ -86,19 +94,15 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
         if (closestSpot != null)
         {
-            Debug.Log($"Found a matching spot: {closestSpot.name}");
-
             int tileIndex = GetTileIndex(closestSpot);
             if (tileIndex == -1)
             {
-                Debug.LogWarning("Could not find tile index for spot!", closestSpot);
                 ResetToOriginalPosition();
                 return;
             }
 
             if (gridLetterFiller.IsValidPlacement(tileIndex))
             {
-                Debug.Log($"Placement is valid at index {tileIndex}");
                 FreePreviousSpot();
 
                 rectTransform.position = closestSpot.position;
@@ -114,18 +118,16 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
                     rangeDisplay.gameObject.SetActive(true);
                 }
 
-                gridLetterFiller.OnPlantPlaced(transform, tileIndex);
                 isPlaced = true;
+                gridLetterFiller.OnPlantPlaced(transform, tileIndex);
             }
             else
             {
-                Debug.LogWarning($"Placement not valid at index {tileIndex} (horizontal/vertical restriction)");
                 ResetToOriginalPosition();
             }
         }
         else
         {
-            Debug.LogWarning("No matching spot found!");
             FreePreviousSpot();
             ResetToOriginalPosition();
         }
@@ -168,7 +170,6 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
 
             if (spotData == null)
             {
-                Debug.LogWarning($"Spot {spot.name} is missing PlantSpotVar1 component!");
                 continue;
             }
 
@@ -189,16 +190,6 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
                         bestSpot = spot.transform;
                     }
                 }
-                else
-                {
-                    Debug.LogWarning($"Spot {spot.name} does not match plant environment! " +
-                        $"Spot: sun={spotData.sun}, wet={spotData.wet}, sand={spotData.sand}, grass={spotData.grass} | " +
-                        $"Plant: normal={normal}, sun={sun}, wet={wet}, dry={dry}");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Spot {spot.name} is not under mouse (isMouseOver={isMouseOver})!");
             }
         }
 
@@ -228,11 +219,21 @@ public class DragAndDrop1 : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
         {
             rangeDisplay.gameObject.SetActive(false);
         }
+        SetInteractable(false);
     }
 
-    // Expose the isPlaced state to GridLetterFiller
     public bool IsPlaced()
     {
         return isPlaced;
+    }
+
+    public void SetInteractable(bool interactable)
+    {
+        if (canvasGroup != null)
+        {
+            canvasGroup.interactable = interactable;
+            canvasGroup.blocksRaycasts = interactable;
+            canvasGroup.alpha = interactable ? 1f : 0.5f;
+        }
     }
 }

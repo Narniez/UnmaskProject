@@ -15,18 +15,35 @@ public class GridLetterFiller : MonoBehaviour
     [SerializeField] private Sprite ropeSprite;
     [SerializeField] private Canvas canvas;
     [SerializeField] private RectTransform lineContainer;
-    [SerializeField] private Transform plantsParent; // Parent object containing the 9 initial plants
+
+    // Serialized fields for assigning plants in the Inspector
+    [SerializeField] private Transform plant1;
+    [SerializeField] private Transform plant2;
+    [SerializeField] private Transform plant3;
+    [SerializeField] private Transform plant4;
+    [SerializeField] private Transform plant5;
+    [SerializeField] private Transform plant6;
+    [SerializeField] private Transform plant7;
+    [SerializeField] private Transform plant8;
+    [SerializeField] private Transform plant9;
+
+    [SerializeField] private int startingRow = 1; // Default to 1st row (row 0 in code)
 
     private RectTransform[] tiles;
     private bool isRowMode = true;
     private int currentRow = 0;
     private int currentColumn = -1;
-    private List<Transform> placedPlants = new List<Transform>(); // Plants that have been placed on the grid
-    private List<Transform> availablePlants = new List<Transform>(); // Initial 9 plants in order
+    private List<Transform> placedPlants = new List<Transform>();
+    private List<Transform> availablePlants = new List<Transform>();
     private List<Image> lineSegments = new List<Image>();
-    private HashSet<int> occupiedTiles = new HashSet<int>(); // Track occupied tile indices
+    private HashSet<int> occupiedTiles = new HashSet<int>();
     private int gridColumns;
     private int gridRows;
+
+    // Track the last placed plant's tile index, terrain type, and plant type
+    private int lastPlacedTileIndex = -1;
+    private string lastPlacedTerrainType = null;
+    private string lastPlacedPlantType = null;
 
     void Start()
     {
@@ -50,25 +67,27 @@ public class GridLetterFiller : MonoBehaviour
             return;
         }
 
-        if (plantsParent == null)
-        {
-            Debug.LogError("Plants Parent is not assigned in the Inspector! Please assign the parent object containing the initial plants.", this);
-            return;
-        }
-
-        // Initialize the list of available plants in order
-        foreach (Transform child in plantsParent)
-        {
-            if (child.GetComponent<DragAndDrop1>() != null) // Only add plants with DragAndDrop1
-            {
-                availablePlants.Add(child);
-            }
-        }
+        // Populate availablePlants using the serialized fields
+        if (plant1 != null) availablePlants.Add(plant1);
+        if (plant2 != null) availablePlants.Add(plant2);
+        if (plant3 != null) availablePlants.Add(plant3);
+        if (plant4 != null) availablePlants.Add(plant4);
+        if (plant5 != null) availablePlants.Add(plant5);
+        if (plant6 != null) availablePlants.Add(plant6);
+        if (plant7 != null) availablePlants.Add(plant7);
+        if (plant8 != null) availablePlants.Add(plant8);
+        if (plant9 != null) availablePlants.Add(plant9);
 
         FillGridWithTiles();
+
+        // Initialize currentRow based on startingRow (convert from 1-based to 0-based)
+        currentRow = Mathf.Clamp(startingRow - 1, 0, gridRows - 1);
+
         UpdateSelectionHighlight();
         victoryPopup.SetActive(false);
         nextLevelButton.onClick.AddListener(OnNextLevelClick);
+
+        UpdatePlantInteraction();
     }
 
     void UpdateStringLine()
@@ -123,32 +142,196 @@ public class GridLetterFiller : MonoBehaviour
         lineSegments.Clear();
         victoryPopup.SetActive(false);
         isRowMode = true;
-        currentRow = 0;
+        currentRow = Mathf.Clamp(startingRow - 1, 0, gridRows - 1); // Reset to the starting row
         currentColumn = -1;
+        lastPlacedTileIndex = -1; // Reset last placed tile
+        lastPlacedTerrainType = null; // Reset last terrain type
+        lastPlacedPlantType = null; // Reset last plant type
         UpdateSelectionHighlight();
 
-        // Reset the isPlaced flag on all plants so they can be dragged again
         DragAndDrop1[] allPlants = FindObjectsByType<DragAndDrop1>(FindObjectsSortMode.None);
         foreach (var plant in allPlants)
         {
             plant.ResetForNewLevel();
         }
+
+        UpdatePlantInteraction();
     }
 
     public bool IsValidPlacement(int index)
     {
+        // Check if the target tile is already occupied
         if (occupiedTiles.Contains(index))
         {
             return false;
         }
 
-        int row = index / gridColumns;
-        int col = index % gridColumns;
+        // Get the next plant to place
+        Transform nextPlant = null;
+        foreach (var plant in availablePlants)
+        {
+            DragAndDrop1 dragHandler = plant.GetComponent<DragAndDrop1>();
+            if (dragHandler != null && !dragHandler.IsPlaced())
+            {
+                nextPlant = plant;
+                break;
+            }
+        }
 
-        if (isRowMode)
-            return row == currentRow;
-        else
-            return col == currentColumn;
+        if (nextPlant == null)
+        {
+            return false; // No plant to place
+        }
+
+        // Check the terrain type of the target tile
+        string targetTerrainType = GetTerrainType(index);
+
+        // Check the plant type of the next plant
+        DragAndDrop1 nextPlantHandler = nextPlant.GetComponent<DragAndDrop1>();
+        string nextPlantType = GetPlantType(nextPlantHandler);
+
+        // Ensure the plant type matches the target terrain type
+        if (nextPlantType != GetPlantTypeForTerrain(targetTerrainType))
+        {
+            return false; // Plant type must match the target terrain type
+        }
+
+        // If the last plant's type matches the expected plant type for the last placed tile's terrain, allow crossing that terrain type
+        bool canCrossLastTerrain = lastPlacedTileIndex != -1 && lastPlacedPlantType == GetPlantTypeForTerrain(lastPlacedTerrainType);
+
+        // Apply terrain crossing restrictions and check for occupied tiles in the path
+        if (lastPlacedTileIndex != -1 && targetTerrainType != null && nextPlantType != null)
+        {
+            int lastRow = lastPlacedTileIndex / gridColumns;
+            int lastCol = lastPlacedTileIndex % gridColumns;
+            int targetRow = index / gridColumns;
+            int targetCol = index % gridColumns;
+
+            // Check for horizontal placement (same row, different columns)
+            if (lastRow == targetRow)
+            {
+                int startCol = lastCol;
+                int endCol = targetCol;
+                int step = (startCol < endCol) ? 1 : -1;
+                for (int i = startCol + step; i != endCol + step; i += step)
+                {
+                    int tileIndex = lastRow * gridColumns + i;
+                    // Check if the tile in the path is occupied
+                    if (occupiedTiles.Contains(tileIndex))
+                    {
+                        return false; // Occupied tile blocks the path
+                    }
+                    string terrainType = GetTerrainType(tileIndex);
+                    // Allow the tile if it matches the last placed terrain type and can be crossed
+                    if (terrainType != null && terrainType == lastPlacedTerrainType && canCrossLastTerrain)
+                    {
+                        continue;
+                    }
+                    // Allow the tile if it matches the target terrain type
+                    if (terrainType != null && terrainType == targetTerrainType)
+                    {
+                        continue;
+                    }
+                    // Allow the tile if it's a grass tile (all plants can jump over grass)
+                    if (terrainType == "grass")
+                    {
+                        continue;
+                    }
+                    // Block placement if none of the above conditions are met
+                    return false;
+                }
+            }
+            // Check for vertical placement (same column, different rows)
+            else if (lastCol == targetCol)
+            {
+                int startRow = lastRow;
+                int endRow = targetRow;
+                int step = (startRow < endRow) ? 1 : -1;
+                for (int i = startRow + step; i != endRow + step; i += step)
+                {
+                    int tileIndex = i * gridColumns + lastCol;
+                    // Check if the tile in the path is occupied
+                    if (occupiedTiles.Contains(tileIndex))
+                    {
+                        return false; // Occupied tile blocks the path
+                    }
+                    string terrainType = GetTerrainType(tileIndex);
+                    // Allow the tile if it matches the last placed terrain type and can be crossed
+                    if (terrainType != null && terrainType == lastPlacedTerrainType && canCrossLastTerrain)
+                    {
+                        continue;
+                    }
+                    // Allow the tile if it matches the target terrain type
+                    if (terrainType != null && terrainType == targetTerrainType)
+                    {
+                        continue;
+                    }
+                    // Allow the tile if it's a grass tile (all plants can jump over grass)
+                    if (terrainType == "grass")
+                    {
+                        continue;
+                    }
+                    // Block placement if none of the above conditions are met
+                    return false;
+                }
+            }
+            else
+            {
+                // If the target tile is not in the same row or column as the last placed tile, block placement
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // Helper method to determine the terrain type of a tile
+    private string GetTerrainType(int tileIndex)
+    {
+        if (tileIndex < 0 || tileIndex >= tiles.Length)
+        {
+            return null;
+        }
+
+        PlantSpotVar1 spot = tiles[tileIndex].GetComponent<PlantSpotVar1>();
+        if (spot == null)
+        {
+            return null;
+        }
+
+        if (spot.grass) return "grass";
+        if (spot.wet) return "wet";
+        if (spot.sand) return "sand";
+        if (spot.sun) return "sun";
+        return null;
+    }
+
+    // Helper method to determine the plant type
+    private string GetPlantType(DragAndDrop1 plantHandler)
+    {
+        if (plantHandler == null)
+        {
+            return null;
+        }
+
+        if (plantHandler.normal) return "normal";
+        if (plantHandler.wet) return "wet";
+        if (plantHandler.dry) return "dry";
+        if (plantHandler.sun) return "sun";
+        return null;
+    }
+
+    // Helper method to map terrain type to expected plant type
+    private string GetPlantTypeForTerrain(string terrainType)
+    {
+        switch (terrainType)
+        {
+            case "grass": return "normal";
+            case "wet": return "wet";
+            case "sand": return "dry";
+            case "sun": return "sun";
+            default: return null;
+        }
     }
 
     public RectTransform[] GetTiles()
@@ -160,13 +343,18 @@ public class GridLetterFiller : MonoBehaviour
     {
         if (occupiedTiles.Contains(tileIndex))
         {
-            Debug.LogWarning($"Tile {tileIndex} is already occupied! Plant placement rejected.");
             return;
         }
 
         placedPlants.Add(plant);
         occupiedTiles.Add(tileIndex);
         UpdateStringLine();
+
+        // Update the last placed tile index, terrain type, and plant type
+        lastPlacedTileIndex = tileIndex;
+        lastPlacedTerrainType = GetTerrainType(tileIndex);
+        DragAndDrop1 plantHandler = plant.GetComponent<DragAndDrop1>();
+        lastPlacedPlantType = GetPlantType(plantHandler);
 
         if (isRowMode)
         {
@@ -181,6 +369,7 @@ public class GridLetterFiller : MonoBehaviour
 
         UpdateSelectionHighlight();
         CheckForVictory();
+        UpdatePlantInteraction();
     }
 
     void CheckForVictory()
@@ -242,18 +431,43 @@ public class GridLetterFiller : MonoBehaviour
         }
     }
 
-    // Method to check if a plant is the next one to be placed
     public bool IsNextPlantToPlace(Transform plant)
     {
-        // Find the first unplaced plant in the availablePlants list
         foreach (var availablePlant in availablePlants)
         {
             DragAndDrop1 dragHandler = availablePlant.GetComponent<DragAndDrop1>();
             if (dragHandler != null && !dragHandler.IsPlaced())
             {
-                return availablePlant == plant; // Return true if this is the next unplaced plant
+                return availablePlant == plant;
             }
         }
-        return false; // No unplaced plants left
+        return false;
+    }
+
+    private void UpdatePlantInteraction()
+    {
+        Transform nextPlant = null;
+
+        // Find the next unplaced plant
+        foreach (var plant in availablePlants)
+        {
+            DragAndDrop1 dragHandler = plant.GetComponent<DragAndDrop1>();
+            if (dragHandler != null && !dragHandler.IsPlaced())
+            {
+                nextPlant = plant;
+                break;
+            }
+        }
+
+        // Enable interaction only for the next plant
+        foreach (var plant in availablePlants)
+        {
+            DragAndDrop1 dragHandler = plant.GetComponent<DragAndDrop1>();
+            if (dragHandler != null)
+            {
+                bool isNext = (plant == nextPlant);
+                dragHandler.SetInteractable(isNext);
+            }
+        }
     }
 }
